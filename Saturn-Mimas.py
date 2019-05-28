@@ -227,7 +227,7 @@ def main():
             if i[-4:] == ".xyz":
                 dirlist.append(create_job_files(i, label="_" + i[:-4].replace(".", "_"), arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
     elif os.path.isfile(args.file):
-        dirlist.append(create_job_files(args.file))
+        dirlist.append(create_job_files(args.file, arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
 
     print(dirlist)
 
@@ -252,5 +252,9 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Interrupted")
         logging.info("Process terminated by user command")
+        logging.info("__________________________")
+        sys.exit(0)
+    except Exception as e:
+        logging.info(e)
         logging.info("__________________________")
         sys.exit(0)
