@@ -1,3 +1,4 @@
+"""
 import logging
 
 
@@ -20,3 +21,14 @@ logger.addHandler(handler_info)
 logger.debug('Debug error')
 logger.info('INFO ERROR')
 logger.critical('INFO ERROR2')
+
+"""
+import signal
+import sys
+import time
+import threading
+
+signal.signal(signal.SIGINT, signal_handler)
+print('Press Ctrl+C')
+forever = threading.Event()
+forever.wait()

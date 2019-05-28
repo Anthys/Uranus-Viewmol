@@ -9,6 +9,18 @@ import sys
 from shutil import copyfile
 import sched
 
+binput= True
+shrink = False
+spr = "---\n"*5
+rroot = os.getcwd()
+cores_per_calc=2
+mx_paralel_calculs = 4
+tcalculs=0
+dirlist = []
+args = ""
+parser= ""
+s = sched.scheduler(time.time, time.sleep)
+
 def get_input():
 
     if binput:
@@ -109,7 +121,7 @@ def is_valid(arg):
         return arg
 
 
-def create_job_files(xyz, label = ""):
+def create_job_files(xyz, arg1, arg2, htime, stime, name, label = ""):
 
     if not is_valid(xyz): quit()
 
@@ -125,10 +137,10 @@ def create_job_files(xyz, label = ""):
     jobfile = prejobfile.read()
     prejobfile.close()
 
-    jobfile = jobfile.replace("h_cpu=hh:mm:ss", "h_cpu="+time1)
-    jobfile = jobfile.replace("s_cpu=hh:mm:ss", "s_cpu="+time2)
+    jobfile = jobfile.replace("h_cpu=hh:mm:ss", "h_cpu="+htime)
+    jobfile = jobfile.replace("s_cpu=hh:mm:ss", "s_cpu="+stime)
     jobfile = jobfile.replace("nom_par_defaut", name + label)
-    jobfile = jobfile.replace("-pe mpi 2", "-pe mpi " + cores_per_calc)
+    jobfile = jobfile.replace("-pe mpi 2", "-pe mpi " + str(cores_per_calc))
 
     towrite = open("submit.job", "w")
     towrite.write(jobfile)
@@ -180,62 +192,65 @@ def checkloop(sc):
 def get_result():
     subprocess.run(["mkdir", "Results"])
 
+def main():
 
+    global dirlist, maxdir, compt, shrink, tcalculs, rroot, args, parser
 
-logging.basicConfig(filename='test_log.log',level=logging.DEBUG,\
-      format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
+    parser = argparse.ArgumentParser(description='SaturnCommand')
+    parser.add_argument("file", help="file or directory name (format xyz to be processed)", type=str)
+    parser.add_argument('-f', "--force", action="store_true", help="force the file to be processed")
+    parser.add_argument('-s', "--shrink", action="store_true", help="remove input spacing")
+    args = parser.parse_args()
 
+    shrink = (True if args.shrink else False)
 
-logging.info(str(datetime.datetime.now()) + " -- process started")
-
-parser = argparse.ArgumentParser(description='SaturnCommand')
-parser.add_argument("file", help="file or directory name (format xyz to be processed)", type=str)
-parser.add_argument('-f', "--force", action="store_true", help="force the file to be processed")
-parser.add_argument('-s', "--shrink", action="store_true", help="remove input spacing")
-args = parser.parse_args()
-
-binput= True
-shrink = (True if args.shrink else False)
-spr = "---\n"*5
-rroot = os.getcwd()
-
-tcalculs=0
-cores_per_calc=2
-mx_paralel_calculs = 4
-
-if os.path.isdir(args.file):
-    trroot = rroot + "/" + args.file
-    os.chdir(trroot)
-    for i in os.listdir():
+    if os.path.isdir(args.file):
+        trroot = rroot + "/" + args.file
         os.chdir(trroot)
-        if i[-4:] == ".xyz":
-            tcalculs += 1
-else: tcalculs = 1
+        for i in os.listdir():
+            os.chdir(trroot)
+            if i[-4:] == ".xyz":
+                tcalculs += 1
+    else: tcalculs = 1
 
-arg1, arg2, time1, time2, name = get_input()
-dirlist = []
-compt = 0
+    arg1, arg2, time1, time2, name = get_input()
+    compt = 0
 
 
-os.chdir(rroot)
-if os.path.isdir(args.file):
-    print(rroot)
-    rroot = rroot + "/" + args.file
     os.chdir(rroot)
-    for i in os.listdir():
+    if os.path.isdir(args.file):
+        print(rroot)
+        rroot = rroot + "/" + args.file
         os.chdir(rroot)
-        if i[-4:] == ".xyz":
-            dirlist.append(create_job_files(i, "_" + i[:-4].replace(".", "_")))
-elif os.path.isfile(args.file):
-    dirlist.append(create_job_files(args.file))
+        for i in os.listdir():
+            os.chdir(rroot)
+            if i[-4:] == ".xyz":
+                dirlist.append(create_job_files(i, label="_" + i[:-4].replace(".", "_"), arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
+    elif os.path.isfile(args.file):
+        dirlist.append(create_job_files(args.file))
 
-print(dirlist)
+    print(dirlist)
 
-maxdir = len(dirlist)
+    maxdir = len(dirlist)
 
-for i in dirlist:
-    launch_job(i)
+    for i in dirlist:
+        launch_job(i)
 
-s = sched.scheduler(time.time, time.sleep)
-s.enter(0, 1, checkloop, (s,))
-s.run()
+    s.enter(0, 1, checkloop, (s,))
+    s.run()
+
+
+def initlog():
+    logging.basicConfig(filename='test_log.log', level=logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
+
+    logging.info(str(datetime.datetime.now()) + " -- process started")
+
+if __name__ == "__main__":
+    initlog()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Interrupted")
+        logging.info("Process terminated by user command")
+        logging.info("__________________________")
+        sys.exit(0)

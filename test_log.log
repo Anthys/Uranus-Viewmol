@@ -13,3 +13,5 @@
 2019-05-27 14:08:11,448 -- root -- WARNING -- Warning Error 01234: Erreur Oracle
 2019-05-27 14:08:11,448 -- root -- ERROR -- error message
 2019-05-27 14:08:11,448 -- root -- CRITICAL -- critical error
+2019-05-28 17:10:55,822 -- root -- INFO -- 2019-05-28 17:10:55.822703 -- process started
+2019-05-28 17:11:08,213 -- root -- INFO -- 2019-05-28 17:11:08.213793 -- process started
