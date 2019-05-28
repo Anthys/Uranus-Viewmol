@@ -14,6 +14,8 @@ elif args.verbosity == 1:
 else:
     print(answer)
 """
+
+"""
 import subprocess
 import os
 from shutil import copyfile
@@ -25,3 +27,30 @@ subprocess.run(["mkdir", "temp"])
 os.chdir(rwork)
 copyfile(rroot + "/" + file, rwork + "/" + file)
 open("Test.txt", "w")
+"""
+
+import sched, time, os, logging
+s = sched.scheduler(time.time, time.sleep)
+
+
+dirlist = []
+
+def checkloop(sc):
+    for i in dirlist:
+        check_end(i)
+    s.enter(5, 1, checkloop, (sc,))
+
+
+s.enter(5, 1, checkloop, (s,))
+s.run()
+
+
+def check_end(path):
+    os.chdir(path)
+    if "GEO_CONVERGED" in os.listdir():
+        logging.info("Process successful in " + path)
+        dirlist.remove(path)
+    elif "GeO_NOT_CONVERGED" in os.listdir():
+        logging.info("Process failed in " + path)
+        dirlist.remove(path)
+    else: pass

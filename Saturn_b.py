@@ -154,9 +154,9 @@ spr = "---\n"*5
 rroot = os.getcwd()
 arg1, arg2, time1, time2, name = get_input()
 
+dirlist = []
 if os.path.isdir(args.file):
     rroot = rroot + "/" + args.file
-    dirlist = []
     os.chdir(rroot)
     for i in os.listdir():
         if i[-4:] == ".xyz":
@@ -166,3 +166,4 @@ elif os.path.isfile(args.file):
 
 for i in dirlist:
     launch_job(i)
+
