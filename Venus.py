@@ -33,15 +33,21 @@ import sched, time, os, logging
 s = sched.scheduler(time.time, time.sleep)
 
 
-dirlist = []
+dirlist = [1, 2]
+maxdir = 1
 
 def checkloop(sc):
-    for i in dirlist:
-        check_end(i)
+    if not dirlist:
+        print("All files done.")
+        return
+    #for i in dirlist:
+    #    check_end(i)
+    dirlist.append(3)
+    print(str(len(dirlist) - maxdir) + "/" + str(maxdir) + " files done.", end="\r")
     s.enter(5, 1, checkloop, (sc,))
 
 
-s.enter(5, 1, checkloop, (s,))
+s.enter(0, 1, checkloop, (s,))
 s.run()
 
 
@@ -54,3 +60,4 @@ def check_end(path):
         logging.info("Process failed in " + path)
         dirlist.remove(path)
     else: pass
+

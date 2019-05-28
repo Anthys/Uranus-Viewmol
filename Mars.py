@@ -1,3 +1,5 @@
+"""
+
 import argparse
 import logging
 
@@ -30,6 +32,13 @@ parser.add_argument("-test", dest="testfile", required=True,
         print(4)
         print(args.testfile)
 """
+"""
 subprocess.run(["ls"])
 print(subprocess.check_output(['ls']))
 """
+import sys, time
+
+for i in range(100):
+    time.sleep(0.1)
+    print(" "*10, end='\r')
+    print("."*(i%5), end="\r")
