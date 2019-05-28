@@ -115,7 +115,7 @@ def create_job_files(xyz, label = ""):
     rwork = rroot + "/temp" + label
     subprocess.run(["mkdir", "temp" + label])
     os.chdir(rwork)
-    copyfile(rroot + "/" + xyz, rwork + "/  " + xyz)
+    copyfile(rroot + "/" + xyz, rwork + "/" + xyz)
     subprocess.run(["tp", "-g", xyz])
 
     os.system("gtm " + arg1 + " " + arg2)
@@ -153,7 +153,7 @@ def check_end(path):
     if "GEO_OPT_CONVERGED" in os.listdir():
         logging.info("Process successful in " + path)
         dirlist.remove(path)
-    elif "GEO_OPT_NOT_CONVERGED" in os.listdir():
+    elif "GEO_OPT_NOT_CONVERGED" in os.listdir() or "not.converged" in os.listdir():
         logging.info("Process failed in " + path)
         dirlist.remove(path)
     else: pass
