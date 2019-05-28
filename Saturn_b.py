@@ -124,9 +124,10 @@ def create_job_files(xyz, label = ""):
     towrite.close()
     logging.info(xyz + " added")
 
-    print("-> Processing of each files." +
-          " Make them alternate in a given number of cores (ex 20), taking turn each time a file has been completed." +
-          " Error handling if there is not enough cores available.")
+    #print("-> Processing of each files." +
+    #      " Make them alternate in a given number of cores (ex 20), taking turn each time a file has been completed." +
+    #      " Error handling if there is not enough cores available.")
+    return rwork
 
 
 def launch_job(path):
@@ -155,10 +156,13 @@ arg1, arg2, time1, time2, name = get_input()
 
 if os.path.isdir(args.file):
     rroot = rroot + "/" + args.file
+    dirlist = []
     os.chdir(rroot)
     for i in os.listdir():
         if i[-4:] == ".xyz":
-            create_job_files(i, i[:-4])
+            dirlist.append(create_job_files(i, i[:-4]))
 elif os.path.isfile(args.file):
-    create_job_files(args.file)
+    dirlist.append(create_job_files(args.file))
 
+for i in dirlist:
+    launch_job(i)
