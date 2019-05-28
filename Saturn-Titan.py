@@ -48,16 +48,19 @@ def get_input():
         if unit1 == "": unit1 = "min"
 
         while True:
-            #ans = ""
+            ans = ""
             try:
                 time1 = float(input("Enter maximum time allowed for each process (in {0}): ".format(unit1)))
             except ValueError:
                 print("Wrong value")
                 continue
-            else: break
-                #while not ans in ["y", "n"]:
-                #    ans = input("Total time: {0}".format(time1*totalmolecules))
-            #if ans == "y": break
+            else:
+                if tcalculs>1:
+                    ttime1 = time1*units[unit1]
+                    while not ans in ["y", "n"]:
+                        ans = input("Certain [y/n]? Total time = {0}".format(time.strftime('%H:%M:%S', time.gmtime(ttime1*((tcalculs/(mx_paralel_calculs+1))+1)))))
+                else: break
+            if ans == "y": break
 
         if not shrink: print(spr)
 
@@ -112,7 +115,7 @@ def create_job_files(xyz, label = ""):
     rwork = rroot + "/temp" + label
     subprocess.run(["mkdir", "temp" + label])
     os.chdir(rwork)
-    copyfile(rroot + "/" + xyz, rwork + "/" + xyz)
+    copyfile(rroot + "/" + xyz, rwork + "/  " + xyz)
     subprocess.run(["tp", "-g", xyz])
 
     os.system("gtm " + arg1 + " " + arg2)
@@ -187,6 +190,19 @@ binput= True
 shrink = (True if args.shrink else False)
 spr = "---\n"*5
 rroot = os.getcwd()
+
+tcalculs=0
+mx_paralel_calculs = 4
+
+if os.path.isdir(args.file):
+    rroot = rroot + "/" + args.file
+    os.chdir(rroot)
+    for i in os.listdir():
+        os.chdir(rroot)
+        if i[-4:] == ".xyz":
+            tcalculs += 1
+else: tcalculs = 1
+
 arg1, arg2, time1, time2, name = get_input()
 dirlist = []
 compt = 0
