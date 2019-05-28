@@ -195,10 +195,10 @@ tcalculs=0
 mx_paralel_calculs = 4
 
 if os.path.isdir(args.file):
-    rroot = rroot + "/" + args.file
-    os.chdir(rroot)
+    trroot = rroot + "/" + args.file
+    os.chdir(trroot)
     for i in os.listdir():
-        os.chdir(rroot)
+        os.chdir(trroot)
         if i[-4:] == ".xyz":
             tcalculs += 1
 else: tcalculs = 1
@@ -207,7 +207,10 @@ arg1, arg2, time1, time2, name = get_input()
 dirlist = []
 compt = 0
 
+
+os.chdir(rroot)
 if os.path.isdir(args.file):
+    print(rroot)
     rroot = rroot + "/" + args.file
     os.chdir(rroot)
     for i in os.listdir():
@@ -217,7 +220,7 @@ if os.path.isdir(args.file):
 elif os.path.isfile(args.file):
     dirlist.append(create_job_files(args.file))
 
-
+print(dirlist)
 
 maxdir = len(dirlist)
 
@@ -225,7 +228,7 @@ for i in dirlist:
     launch_job(i)
 
 
-subprocess.run(["mkdir", "Results"])
+#subprocess.run(["mkdir", "Results"])
 
 s = sched.scheduler(time.time, time.sleep)
 s.enter(0, 1, checkloop, (s,))
