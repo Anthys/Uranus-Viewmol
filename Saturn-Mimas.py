@@ -33,6 +33,7 @@ def get_input():
             arg2 = input("Enter second parameter: ")
         arg1 = "-" + arg1
         arg2 = "-" + arg2
+        loggin.info("Arguments for gtm: " + arg1 + " " + arg2)
 
         if not shrink: print(spr)
 
@@ -153,7 +154,7 @@ def check_end(path):
     if "GEO_OPT_CONVERGED" in os.listdir():
         logging.info("Process successful in " + path)
         dirlist.remove(path)
-    elif "GEO_OPT_NOT_CONVERGED" in os.listdir() or "not.converged" in os.listdir():
+    elif "GEO_OPT_FAILED" in os.listdir() or "not.converged" in os.listdir():
         logging.info("Process failed in " + path)
         dirlist.remove(path)
     else: pass

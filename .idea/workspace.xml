@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9903dc35-67a4-4c2c-9247-06958f93c531" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Saturn-Mimas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Saturn-Titan.py" beforeDir="false" afterPath="$PROJECT_DIR$/Saturn-Titan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Saturn-Mimas.py" beforeDir="false" afterPath="$PROJECT_DIR$/Saturn-Mimas.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -104,8 +103,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Saturn-Mimas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="433">
-              <caret line="218" column="52" selection-start-line="218" selection-start-column="52" selection-end-line="218" selection-end-column="52" />
+            <state relative-caret-position="478">
+              <caret line="35" column="61" selection-start-line="35" selection-start-column="61" selection-end-line="35" selection-end-column="61" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -356,7 +355,7 @@
       <workItem from="1559024017130" duration="466000" />
       <workItem from="1559025380243" duration="451000" />
       <workItem from="1559027390295" duration="7020000" />
-      <workItem from="1559042166572" duration="7646000" />
+      <workItem from="1559042166572" duration="10680000" />
     </task>
     <task id="LOCAL-00001" summary="upd">
       <created>1559037018810</created>
@@ -386,11 +385,25 @@
       <option name="project" value="LOCAL" />
       <updated>1559048692461</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="improv on working with multiples files">
+      <created>1559049837732</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1559049837732</updated>
+    </task>
+    <task id="LOCAL-00006" summary="stpd">
+      <created>1559050596491</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1559050596491</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33095000" />
+    <option name="totallyTimeSpent" value="36129000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-4" width="1857" height="1085" extended-state="6" />
@@ -428,7 +441,9 @@
     </ignored-roots>
     <MESSAGE value="upd" />
     <MESSAGE value="total time take added" />
-    <option name="LAST_COMMIT_MESSAGE" value="total time take added" />
+    <MESSAGE value="improv on working with multiples files" />
+    <MESSAGE value="stpd" />
+    <option name="LAST_COMMIT_MESSAGE" value="stpd" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/StagePro$Jupiter.coverage" NAME="Jupiter Coverage Results" MODIFIED="1558970171380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -527,8 +542,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Saturn-Mimas.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="218" column="52" selection-start-line="218" selection-start-column="52" selection-end-line="218" selection-end-column="52" />
+        <state relative-caret-position="478">
+          <caret line="35" column="61" selection-start-line="35" selection-start-column="61" selection-end-line="35" selection-end-column="61" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
