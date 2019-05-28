@@ -33,7 +33,7 @@ def get_input():
             arg2 = input("Enter second parameter: ")
         arg1 = "-" + arg1
         arg2 = "-" + arg2
-        loggin.info("Arguments for gtm: " + arg1 + " " + arg2)
+        logging.info("Arguments for gtm: " + arg1 + " " + arg2)
 
         if not shrink: print(spr)
 
@@ -128,6 +128,7 @@ def create_job_files(xyz, label = ""):
     jobfile = jobfile.replace("h_cpu=hh:mm:ss", "h_cpu="+time1)
     jobfile = jobfile.replace("s_cpu=hh:mm:ss", "s_cpu="+time2)
     jobfile = jobfile.replace("nom_par_defaut", name + label)
+    jobfile = jobfile.replace("-pe mpi 2", "-pe mpi " + cores_per_calc)
 
     towrite = open("submit.job", "w")
     towrite.write(jobfile)
@@ -167,12 +168,18 @@ def checkloop(sc):
 
     if not dirlist:
         print("All files done.")
+        get_result()
         return
     for i in dirlist:
         check_end(i)
     print(" "*40, end='\r')
     print(str(-len(dirlist)+maxdir) + "/" + str(maxdir) + " files done." + "["+"."*(compt%4)+"]", end="\r")
     s.enter(3, 1, checkloop, (sc,))
+
+
+def get_result():
+    subprocess.run(["mkdir", "Results"])
+
 
 
 logging.basicConfig(filename='test_log.log',level=logging.DEBUG,\
@@ -193,6 +200,7 @@ spr = "---\n"*5
 rroot = os.getcwd()
 
 tcalculs=0
+cores_per_calc=2
 mx_paralel_calculs = 4
 
 if os.path.isdir(args.file):
@@ -227,9 +235,6 @@ maxdir = len(dirlist)
 
 for i in dirlist:
     launch_job(i)
-
-
-#subprocess.run(["mkdir", "Results"])
 
 s = sched.scheduler(time.time, time.sleep)
 s.enter(0, 1, checkloop, (s,))
