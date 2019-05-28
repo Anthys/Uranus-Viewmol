@@ -1,0 +1,15 @@
+2019-05-27 14:04:37,276 -- root -- DEBUG -- Debug error
+2019-05-27 14:04:37,276 -- root -- INFO -- INFO ERROR
+2019-05-27 14:04:37,277 -- root -- WARNING -- Warning Error 01234: Erreur Oracle
+2019-05-27 14:04:37,277 -- root -- ERROR -- error message
+2019-05-27 14:04:37,277 -- root -- CRITICAL -- critical error
+2019-05-27 14:06:53,446 -- root -- DEBUG -- Debug error
+2019-05-27 14:06:53,446 -- root -- INFO -- INFO ERROR
+2019-05-27 14:06:53,446 -- root -- WARNING -- Warning Error 01234: Erreur Oracle
+2019-05-27 14:06:53,446 -- root -- ERROR -- error message
+2019-05-27 14:06:53,447 -- root -- CRITICAL -- critical error
+2019-05-27 14:08:11,448 -- root -- DEBUG -- Debug error
+2019-05-27 14:08:11,448 -- root -- INFO -- INFO ERROR
+2019-05-27 14:08:11,448 -- root -- WARNING -- Warning Error 01234: Erreur Oracle
+2019-05-27 14:08:11,448 -- root -- ERROR -- error message
+2019-05-27 14:08:11,448 -- root -- CRITICAL -- critical error

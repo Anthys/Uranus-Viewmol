@@ -1,0 +1,15 @@
+Metadata-Version: 2.0
+Name: qstat
+Version: 0.0.4
+Summary: Parse qstat xml to python dict
+Home-page: https://github.com/relleums/qstat/archive/0.0.4.tar.gz
+Author: Sebastian Achim Mueller
+Author-email: sebmuell@phys.ethz.ch
+License: GPLv3
+Keywords: qsub,qstat,grid engine,SGE,queue
+Platform: UNKNOWN
+Requires-Dist: xmltodict
+
+UNKNOWN
+
+
