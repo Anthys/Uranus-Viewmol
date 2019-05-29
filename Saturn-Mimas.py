@@ -12,14 +12,14 @@ user_input = True
 shrink = False
 spr = "---\n"*5
 cores_per_calc=2
-mx_parallel_calculs = 4
+mx_parallel_calculations = 4
 s = sched.scheduler(time.time, time.sleep)
 
-tcalculs=0
+tcalculations=0
 rroot = os.getcwd()
 dirlist = []
 args = ""
-parser= ""
+parser = ""
 compt = 0
 
 def get_input():
@@ -29,7 +29,7 @@ def get_input():
         arg2 = ""
         if not shrink: print(spr)
         print("r ridft")
-        print("d dscf")F
+        print("d dscf")
         while arg1 not in ["r", "d"]:
             arg1 = input("Enter first parameter: ").lower()
         if not shrink: print(spr)
@@ -69,10 +69,10 @@ def get_input():
                 print("Wrong value")
                 continue
             else:
-                if tcalculs>1:
+                if tcalculations>1:
                     ttime1 = time1*units[unit1]
                     while not ans in ["y", "n"]:
-                        ans = input("Certain [y/n]? Total time = {0}".format(time.strftime('%H:%M:%S', time.gmtime(ttime1*((tcalculs//(mx_parallel_calculs+1))+1)))))
+                        ans = input("Certain [y/n]? Total time = {0}".format(time.strftime('%H:%M:%S', time.gmtime(ttime1*((tcalculations//(mx_parallel_calculations+1))+1)))))
                 else: break
             if ans == "y": break
 
@@ -168,11 +168,11 @@ def check_end(path):
     if "GEO_OPT_CONVERGED" in os.listdir():
         logging.info("Process successful in " + path)
         dirlist.remove(path)
-        if len(dirlist)>=mx_parallel_calculs: launch_job(dirlist[mx_parallel_calculs-1])
+        if len(dirlist)>=mx_parallel_calculations: launch_job(dirlist[mx_parallel_calculations-1])
     elif "GEO_OPT_FAILED" in os.listdir() or "not.converged" in os.listdir():
         logging.info("Process failed in " + path)
         dirlist.remove(path)
-        if len(dirlist)>=mx_parallel_calculs: launch_job(dirlist[mx_parallel_calculs-1])
+        if len(dirlist)>=mx_parallel_calculations: launch_job(dirlist[mx_parallel_calculations-1])
     else: pass
 
 
@@ -186,7 +186,7 @@ def checkloop(sc):
         logging.info("All files were computed")
         get_result()
         return
-    for i in dirlist[:mx_parallel_calculs]:  # Works even if len(dirlist)<mx_parallel_calculs
+    for i in dirlist[:mx_parallel_calculations]:  # Works even if len(dirlist)<mx_parallel_calculations
         check_end(i)
     print(" "*40, end='\r')
     print(str(-len(dirlist)+maxdir) + "/" + str(maxdir) + " files done." + "["+"."*(compt%4)+"]", end="\r")
@@ -198,7 +198,7 @@ def get_result():
 
 def main():
 
-    global dirlist, maxdir, compt, shrink, tcalculs, rroot, args, parser
+    global dirlist, maxdir, compt, shrink, tcalculations, rroot, args, parser
 
     parser = argparse.ArgumentParser(description='SaturnCommand')
     parser.add_argument("file", help="file or directory name (format xyz to be processed)", type=str)
@@ -214,12 +214,12 @@ def main():
         os.chdir(trroot)
         for i in os.listdir():
             if i[-4:] == ".xyz":
-                tcalculs += 1
-    else: tcalculs = 1
+                tcalculations += 1
+    else: tcalculations = 1
 
     arg1, arg2, time1, time2, name = get_input()
 
-    # os.chdir(rroot)
+    os.chdir(rroot)
     if os.path.isdir(args.file):
         rroot = rroot + "/" + args.file
         os.chdir(rroot)
@@ -235,7 +235,7 @@ def main():
 
     maxdir = len(dirlist)
 
-    for i in range(mx_parallel_calculs):
+    for i in range(mx_parallel_calculations):
         if len(dirlist) > i:
             launch_job(dirlist[i])
         else: break
