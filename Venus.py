@@ -28,7 +28,7 @@ os.chdir(rwork)
 copyfile(rroot + "/" + file, rwork + "/" + file)
 open("Test.txt", "w")
 """
-
+"""
 import sched, time, os, logging
 s = sched.scheduler(time.time, time.sleep)
 
@@ -53,7 +53,8 @@ s.run()
 
 def check_end(path):
     os.chdir(path)
-    if "GEO_CONVERGED" in os.listdir():
+    if "GEO_CONVERGED" in os.listdir():h)
+logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
         logging.info("Process successful in " + path)
         dirlist.remove(path)
     elif "GeO_NOT_CONVERGED" in os.listdir():
@@ -61,3 +62,9 @@ def check_end(path):
         dirlist.remove(path)
     else: pass
 
+"""
+import logging
+
+logging.basicConfig(filename='/home/antys/log/log.log', level=logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
+logging.info("__________________________")
+logging.info("Process started")

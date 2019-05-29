@@ -7,6 +7,7 @@ import os
 import sys
 from shutil import copyfile
 import sched
+import xml.etree.ElementTree as ET
 
 user_input = True
 shrink = False
@@ -21,6 +22,7 @@ dirlist = []
 args = ""
 parser = ""
 compt = 0
+path2name = {}
 
 def get_input():
 
@@ -174,6 +176,14 @@ def check_end(path):
         dirlist.remove(path)
         if len(dirlist)>=mx_parallel_calculations: launch_job(dirlist[mx_parallel_calculations-1])
     elif compt%2==0:
+        mydoc = ET.fromstring(subprocess.check_output(["qstat", "-xml"]))
+        check = False
+        for a in mydoc[0]:
+            if a[2].text == path2name[path]: check = True
+        if not check:
+            logging.info("Process failed in "+ path)
+            logging.info("Self-deletion in queue")
+            dirlist.remove(path)
         '''
         for i in os.listdir():
             if ".o" in i:
@@ -238,9 +248,12 @@ def main():
         for i in os.listdir():
             os.chdir(rroot)  # To put inside the create_job_file
             if i[-4:] == ".xyz":
-                dirlist.append(create_job_files(i, label="_" + i[:-4].replace(".", "_"), arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
+                label = "_" + i[:-4].replace(".", "_")
+                dirlist.append(create_job_files(i, label=label, arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
+                path2name[dirlist[-1]] = name + label
     elif os.path.isfile(args.file):
         dirlist.append(create_job_files(args.file, arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
+        path2name[dirlist[-1]] = name
 
     if args.creation_only:
         logging.info("Stopped after creating turbomole files.")
@@ -261,7 +274,6 @@ def initlog():
     logging.basicConfig(filename='/home/barres/log.log', level=logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
     logging.info("__________________________")
     logging.info("Process started")
-
 
 if __name__ == "__main__":
     initlog()
