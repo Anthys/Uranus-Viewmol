@@ -211,9 +211,7 @@ def checkloop_jobex(sc):
         list_dir_orbitals = alldirs
         print("Beginning calculations of orbitals.")
         logging.info("Beginning calculations of orbitals.")
-        print("1")
         s.enter(0, 1, checkloop_orbital, (sc,))
-        print("2")
         return
     for i in list_dir_jobex[:mx_parallel_calculations]:  # Works even if len(list_dir_jobex)<mx_parallel_calculations
         check_end(i)
@@ -222,20 +220,18 @@ def checkloop_jobex(sc):
     s.enter(3, 1, checkloop_jobex, (sc,))
 
 def checkloop_orbital(sc):
-    print(3)
     global list_dir_orbitals, maxdir, compt
     compt+=1
-
     if not list_dir_orbitals:
+        print("")
         print("All files done.")
         logging.info("All files were computed - ORBITALS")
         return
     for i in list_dir_orbitals[:mx_parallel_calculations]:  # Works even if len(list_dir_jobex)<mx_parallel_calculations
         os.chdir(i)
-        print(4)
         tcompt = 0
-        for i in os.listdir():
-            if ".cub" in i:
+        for j in os.listdir():
+            if ".cub" in j:
                 tcompt+=1
         if tcompt>=2:
             logging.info("Orbitals calculated in " + i)
@@ -243,7 +239,6 @@ def checkloop_orbital(sc):
     print(" " * 40, end='\r')
     print(str(-len(list_dir_orbitals) + maxdir) + "/" + str(maxdir) + " files done." + "[" + "." * (compt % 4) + "]", end="\r")
     s.enter(3, 1, checkloop_orbital, (sc,))
-
 
 def get_orbitals(path):
 
@@ -288,6 +283,7 @@ def get_frequency(path):
     else: pass
     tread = tfile.read()
     tread = tread.replace("jobex -c 100", "aoforce > aoforce.log")
+    os.system("gsub -N " + name + "_frequency" + " submit.job")
 
 def main():
 
