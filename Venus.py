@@ -70,6 +70,7 @@ logging.basicConfig(filename='/home/antys/log/log.log', level=logging.DEBUG, for
 logging.info("__________________________")
 logging.info("Process started")
 """
+"""
 import re
 a = "LVZFVHFDIVB :f zeFZEK EF \n ZEfzefZEFIF ZEOF truc:      20284ezjvfz"
 p = re.compile("truc:[ ]*")
@@ -77,3 +78,4 @@ match = re.search('truc:[ ]*([0-9]*)', a)
 print(match)
 if match:
     print(match.group(1))
+"""

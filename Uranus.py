@@ -24,12 +24,13 @@ args = ""
 parser = ""
 compt = 0
 alldirs = []
+name = "alphatest"
 
 def get_input():
 
     if user_input:
-        arg1 = ""
-        arg2 = ""
+        arg1 = " "
+        arg2 = " "
         if not shrink: print(spr)
         print("r ridft")
         print("d dscf")
@@ -131,7 +132,7 @@ def create_job_files(xyz, arg1, arg2, htime, stime, name, label = ""):
 
     if not is_valid(xyz): quit()
 
-    rwork = rroot + name + label
+    rwork = rroot + "/" + name + label
     subprocess.run(["mkdir", name + label])
     os.chdir(rwork)
     copyfile(rroot + "/" + xyz, rwork + "/" + xyz)
@@ -202,13 +203,17 @@ def checkloop_jobex(sc):
         print("")
         print("All files done.")
         logging.info("All files were computed - JOBEX")
+        if args.stop == "j":
+            return
         for i in alldirs:
             get_orbitals(i)
         compt = 0
         list_dir_orbitals = alldirs
         print("Beginning calculations of orbitals.")
         logging.info("Beginning calculations of orbitals.")
+        print("1")
         s.enter(0, 1, checkloop_orbital, (sc,))
+        print("2")
         return
     for i in list_dir_jobex[:mx_parallel_calculations]:  # Works even if len(list_dir_jobex)<mx_parallel_calculations
         check_end(i)
@@ -217,7 +222,7 @@ def checkloop_jobex(sc):
     s.enter(3, 1, checkloop_jobex, (sc,))
 
 def checkloop_orbital(sc):
-
+    print(3)
     global list_dir_orbitals, maxdir, compt
     compt+=1
 
@@ -227,6 +232,7 @@ def checkloop_orbital(sc):
         return
     for i in list_dir_orbitals[:mx_parallel_calculations]:  # Works even if len(list_dir_jobex)<mx_parallel_calculations
         os.chdir(i)
+        print(4)
         tcompt = 0
         for i in os.listdir():
             if ".cub" in i:
@@ -236,7 +242,7 @@ def checkloop_orbital(sc):
             list_dir_orbitals.remove(i)
     print(" " * 40, end='\r')
     print(str(-len(list_dir_orbitals) + maxdir) + "/" + str(maxdir) + " files done." + "[" + "." * (compt % 4) + "]", end="\r")
-    s.enter(3, 1, checkloop_orbital(), (sc,))
+    s.enter(3, 1, checkloop_orbital, (sc,))
 
 
 def get_orbitals(path):
@@ -248,6 +254,7 @@ def get_orbitals(path):
         tfile = open("job.last")
     except Exception as e:
         logging.info("Error in " + path + " -- " + str(e))
+        return
     else: pass
     tread = tfile.read()
     tfile.close()
@@ -255,30 +262,45 @@ def get_orbitals(path):
     mx_orbital = 0
     if match:
         mx_orbital = match.group(1)
-        print(mx_orbital)
+        print("Highest occupied orbital: " +  mx_orbital)
     else:
         logging.info("Error in " + path + " -- No occupied orbitals found in submit.job")
         return
     tfile = open("control")
     tread = tfile.read()
     tfile.close()
-    tread = tread.replace("$end", "$valpoint fmt=cub mo " + str(mx_orbital) + "," + str(mx_orbital+1) + "\n $end")
+    tread = tread.replace("$end", "$pointval fmt=cub mo " + mx_orbital + "," + str(int(mx_orbital)+1) + "\n$end")
     tfile = open("control", "w")
     tfile.write(tread)
     tfile.close()
-    os.system("qsub " + "submit.job")
+    os.system("qsub -N "+ name + "_orbitals" + " submit.job")
 
+def get_frequency(path):
 
+    global compt
+
+    os.chdir(path)
+    try:
+        tfile= open("submit.job")
+    except Exception as e:
+        logging.info("Error in " + path + " -- " + str(e))
+        return
+    else: pass
+    tread = tfile.read()
+    tread = tread.replace("jobex -c 100", "aoforce > aoforce.log")
 
 def main():
 
-    global list_dir_jobex, maxdir, compt, shrink, tcalculations, rroot, args, parser, alldirs
+    global list_dir_jobex, maxdir, compt, shrink, tcalculations, rroot, args, parser, alldirs, name, list_dir_orbitals
 
     parser = argparse.ArgumentParser(description='SaturnCommand')
     parser.add_argument("file", help="file or directory name (format xyz to be processed)", type=str)
     parser.add_argument('-f', "--force", action="store_true", help="force the file to be processed")
     parser.add_argument('-s', "--shrink", action="store_true", help="remove input spacing")
     parser.add_argument('-c', "--creation_only", action="store_true", help="only creates turbomole files, doesn't qsub them")
+    parser.add_argument("-o", "--orbital_only", action="store_true", help="find orbitals of turbomole file")
+    parser.add_argument("-st", "--stop", type=str, choices= ["o", "j"], help="stop after certain action | o orbital / j jobex")
+    parser.add_argument("-jst", "--just", type=str, choices=["o"], help="only does one step")
     args = parser.parse_args()
 
     shrink = (True if args.shrink else False)
@@ -312,6 +334,16 @@ def main():
         quit()
 
     maxdir = len(list_dir_jobex)
+
+    if args.just == "o":
+        for i in alldirs:
+            get_orbitals(i)
+        compt = 0
+        list_dir_orbitals = alldirs
+        print("Beginning calculations of orbitals.")
+        logging.info("Beginning calculations of orbitals.")
+        s.enter(0, 1, checkloop_orbital, (sc,))
+
 
     for i in range(mx_parallel_calculations):
         if len(list_dir_jobex) > i:
