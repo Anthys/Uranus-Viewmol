@@ -23,6 +23,7 @@ logger.info('INFO ERROR')
 logger.critical('INFO ERROR2')
 
 """
+"""
 import signal
 import sys
 import time

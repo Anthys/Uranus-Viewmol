@@ -230,8 +230,9 @@ def main():
     elif os.path.isfile(args.file):
         dirlist.append(create_job_files(args.file, arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
 
-
-    if args.creation_only: quit()
+    if args.creation_only:
+        logging.info("Stopped after creating turbomole files.")
+        quit()
 
     maxdir = len(dirlist)
 
@@ -246,7 +247,9 @@ def main():
 
 def initlog():
     logging.basicConfig(filename='test_log.log', level=logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
+    logging.info("__________________________")
     logging.info("Process started")
+
 
 if __name__ == "__main__":
     initlog()
