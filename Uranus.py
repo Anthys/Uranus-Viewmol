@@ -25,6 +25,7 @@ parser = ""
 compt = 0
 alldirs = []
 name = "alphatest"
+list_dir_frequency = []
 
 def get_input():
 
@@ -220,12 +221,21 @@ def checkloop_jobex(sc):
     s.enter(3, 1, checkloop_jobex, (sc,))
 
 def checkloop_orbital(sc):
-    global list_dir_orbitals, maxdir, compt
+    global list_dir_orbitals, maxdir, compt, list_dir_frequency
     compt+=1
     if not list_dir_orbitals:
         print("")
         print("All files done.")
         logging.info("All files were computed - ORBITALS")
+        if args.stop == "o":
+            return
+        for i in alldirs:
+            get_frequency(i)
+        compt = 0
+        list_dir_frequency = alldirs
+        print("Beginning calculations of frequencies.")
+        logging.info("Beginning calculations of frequencies.")
+        s.enter(0, 1, checkloop_frequency, (sc,))
         return
     for i in list_dir_orbitals[:mx_parallel_calculations]:  # Works even if len(list_dir_jobex)<mx_parallel_calculations
         os.chdir(i)
@@ -239,6 +249,28 @@ def checkloop_orbital(sc):
     print(" " * 40, end='\r')
     print(str(-len(list_dir_orbitals) + maxdir) + "/" + str(maxdir) + " files done." + "[" + "." * (compt % 4) + "]", end="\r")
     s.enter(3, 1, checkloop_orbital, (sc,))
+
+def checkloop_frequency(sc):
+
+    global list_dir_frequency, maxdir, compt
+    compt +=1
+    if not list_dir_frequency:
+        print("")
+        print("All files done.")
+        logging.info("All files were computed - FREQUENCY")
+        return
+    for i in list_dir_frequency[:mx_parallel_calculations]:  # Works even if len(list_dir_jobex)<mx_parallel_calculations
+        os.chdir(i)
+        tcompt = 0
+        if "vibspectrum" in os.listdir():
+            tcompt += 1
+        if tcompt >= 1:
+            logging.info("Frequency calculated in " + i)
+            list_dir_orbitals.remove(i)
+    print(" " * 40, end='\r')
+    print(str(-len(list_dir_frequency) + maxdir) + "/" + str(maxdir) + " files done." + "[" + "." * (compt % 4) + "]",
+          end="\r")
+    s.enter(3, 1, checkloop_frequency, (sc,))
 
 def get_orbitals(path):
 
