@@ -126,8 +126,8 @@ def create_job_files(xyz, arg1, arg2, htime, stime, name, label = ""):
 
     if not is_valid(xyz): quit()
 
-    rwork = rroot + "/temp" + label
-    subprocess.run(["mkdir", "temp" + label])
+    rwork = rroot + "/" + name + label
+    subprocess.run(["mkdir", name + label])
     os.chdir(rwork)
     copyfile(rroot + "/" + xyz, rwork + "/" + xyz)
     subprocess.run(["tp", "-g", xyz])

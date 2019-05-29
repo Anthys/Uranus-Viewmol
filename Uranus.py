@@ -7,7 +7,7 @@ import os
 import sys
 from shutil import copyfile
 import sched
-import xml.etree.ElementTree as ET
+import re
 
 user_input = True
 shrink = False
@@ -18,11 +18,12 @@ s = sched.scheduler(time.time, time.sleep)
 
 tcalculations=0
 rroot = os.getcwd()
-dirlist = []
+list_dir_jobex = []
+list_dir_orbitals = []
 args = ""
 parser = ""
 compt = 0
-path2name = {}
+alldirs = []
 
 def get_input():
 
@@ -35,7 +36,7 @@ def get_input():
         while arg1 not in ["r", "d"]:
             arg1 = input("Enter first parameter: ").lower()
         if not shrink: print(spr)
-        print("o optimisation minimum")
+        print("o optimisation minimum DEFAULT")
         print("t transition state")
         print("O optimisation minimum + force")
         print("T transition state + force")
@@ -44,8 +45,9 @@ def get_input():
         print("p pathway")
         print("x tddft")
         print("X opt + tddft")
-        while arg2 not in ["o", "t", "O", "T", "f", "F", "p", "x", "X"]:
+        while arg2 not in ["o", "t", "O", "T", "f", "F", "p", "x", "X", ""]:
             arg2 = input("Enter second parameter: ")
+        if arg2 == "": arg2 = "o"
         arg1 = "-" + arg1
         arg2 = "-" + arg2
         logging.info("Arguments for gtm: " + arg1 + " " + arg2)
@@ -109,7 +111,8 @@ def get_input():
             name = input("Enter the project name (length>3): ")
 
         return arg1, arg2, time1, time2, name
-
+    else:
+        return "-o"
 
 def is_valid(arg):
 
@@ -128,7 +131,7 @@ def create_job_files(xyz, arg1, arg2, htime, stime, name, label = ""):
 
     if not is_valid(xyz): quit()
 
-    rwork = rroot + "/" + name + label
+    rwork = rroot + name + label
     subprocess.run(["mkdir", name + label])
     os.chdir(rwork)
     copyfile(rroot + "/" + xyz, rwork + "/" + xyz)
@@ -164,26 +167,18 @@ def launch_job(path):
 
 def check_end(path):
 
-    global dirlist
+    global list_dir_jobex
 
     os.chdir(path)
     if "GEO_OPT_CONVERGED" in os.listdir():
         logging.info("Process successful in " + path)
-        dirlist.remove(path)
-        if len(dirlist)>=mx_parallel_calculations: launch_job(dirlist[mx_parallel_calculations-1])
+        list_dir_jobex.remove(path)
+        if len(list_dir_jobex)>=mx_parallel_calculations: launch_job(list_dir_jobex[mx_parallel_calculations-1])
     elif "GEO_OPT_FAILED" in os.listdir() or "not.converged" in os.listdir():
         logging.info("Process failed in " + path)
-        dirlist.remove(path)
-        if len(dirlist)>=mx_parallel_calculations: launch_job(dirlist[mx_parallel_calculations-1])
+        list_dir_jobex.remove(path)
+        if len(list_dir_jobex)>=mx_parallel_calculations: launch_job(list_dir_jobex[mx_parallel_calculations-1])
     elif compt%2==0:
-        mydoc = ET.fromstring(subprocess.check_output(["qstat", "-xml"]))
-        check = False
-        for a in mydoc[0]:
-            if a[2].text == path2name[path]: check = True
-        if not check:
-            logging.info("Process failed in "+ path)
-            logging.info("Self-deletion in queue")
-            dirlist.remove(path)
         '''
         for i in os.listdir():
             if ".o" in i:
@@ -191,37 +186,93 @@ def check_end(path):
                 tread = tfile.read()
                 if "program aoforce not found" in tread:
                     logging.info("AOFORCE NOT FOUND - Process failed in " + path)
-                    dirlist.remove(path)
-                    if len(dirlist) >= mx_parallel_calculations: launch_job(dirlist[mx_parallel_calculations - 1])
+                    list_dir_jobex.remove(path)
+                    if len(list_dir_jobex) >= mx_parallel_calculations: launch_job(list_dir_jobex[mx_parallel_calculations - 1])
                 tfile.close()
         '''
     else: pass
 
 
-def checkloop(sc):
+def checkloop_jobex(sc):
 
-    global dirlist, maxdir, compt
+    global list_dir_jobex, maxdir, compt, list_dir_orbitals
     compt+=1
 
-    if not dirlist:
+    if not list_dir_jobex:
         print("")
         print("All files done.")
-        logging.info("All files were computed")
-        get_result()
+        logging.info("All files were computed - JOBEX")
+        for i in alldirs:
+            get_orbitals(i)
+        compt = 0
+        list_dir_orbitals = alldirs
+        print("Beginning calculations of orbitals.")
+        logging.info("Beginning calculations of orbitals.")
+        s.enter(0, 1, checkloop_orbital, (sc,))
         return
-    for i in dirlist[:mx_parallel_calculations]:  # Works even if len(dirlist)<mx_parallel_calculations
+    for i in list_dir_jobex[:mx_parallel_calculations]:  # Works even if len(list_dir_jobex)<mx_parallel_calculations
         check_end(i)
     print(" "*40, end='\r')
-    print(str(-len(dirlist)+maxdir) + "/" + str(maxdir) + " files done." + "["+"."*(compt%4)+"]", end="\r")
-    s.enter(3, 1, checkloop, (sc,))
+    print(str(-len(list_dir_jobex)+maxdir) + "/" + str(maxdir) + " files done." + "["+"."*(compt%4)+"]", end="\r")
+    s.enter(3, 1, checkloop_jobex, (sc,))
+
+def checkloop_orbital(sc):
+
+    global list_dir_orbitals, maxdir, compt
+    compt+=1
+
+    if not list_dir_orbitals:
+        print("All files done.")
+        logging.info("All files were computed - ORBITALS")
+        return
+    for i in list_dir_orbitals[:mx_parallel_calculations]:  # Works even if len(list_dir_jobex)<mx_parallel_calculations
+        os.chdir(i)
+        tcompt = 0
+        for i in os.listdir():
+            if ".cub" in i:
+                tcompt+=1
+        if tcompt>=2:
+            logging.info("Orbitals calculated in " + i)
+            list_dir_orbitals.remove(i)
+    print(" " * 40, end='\r')
+    print(str(-len(list_dir_orbitals) + maxdir) + "/" + str(maxdir) + " files done." + "[" + "." * (compt % 4) + "]", end="\r")
+    s.enter(3, 1, checkloop_orbital(), (sc,))
 
 
-def get_result():
-    subprocess.run(["mkdir", "Results"])
+def get_orbitals(path):
+
+    global compt
+
+    os.chdir(path)
+    try:
+        tfile = open("job.last")
+    except Exception as e:
+        logging.info("Error in " + path + " -- " + str(e))
+    else: pass
+    tread = tfile.read()
+    tfile.close()
+    match = re.search('number of occupied orbitals :[ ]*([0-9]*)', tread)
+    mx_orbital = 0
+    if match:
+        mx_orbital = match.group(1)
+        print(mx_orbital)
+    else:
+        logging.info("Error in " + path + " -- No occupied orbitals found in submit.job")
+        return
+    tfile = open("control")
+    tread = tfile.read()
+    tfile.close()
+    tread = tread.replace("$end", "$valpoint fmt=cub mo " + str(mx_orbital) + "," + str(mx_orbital+1) + "\n $end")
+    tfile = open("control", "w")
+    tfile.write(tread)
+    tfile.close()
+    os.system("qsub " + "submit.job")
+
+
 
 def main():
 
-    global dirlist, maxdir, compt, shrink, tcalculations, rroot, args, parser
+    global list_dir_jobex, maxdir, compt, shrink, tcalculations, rroot, args, parser, alldirs
 
     parser = argparse.ArgumentParser(description='SaturnCommand')
     parser.add_argument("file", help="file or directory name (format xyz to be processed)", type=str)
@@ -249,32 +300,32 @@ def main():
         for i in os.listdir():
             os.chdir(rroot)  # To put inside the create_job_file
             if i[-4:] == ".xyz":
-                label = "_" + i[:-4].replace(".", "_")
-                dirlist.append(create_job_files(i, label=label, arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
-                path2name[dirlist[-1]] = name + label
+                list_dir_jobex.append(create_job_files(i, label="_" + i[:-4].replace(".", "_"), arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
     elif os.path.isfile(args.file):
-        dirlist.append(create_job_files(args.file, arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
-        path2name[dirlist[-1]] = name
+        list_dir_jobex.append(create_job_files(args.file, arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
+
+    alldirs = list_dir_jobex[:]
 
     if args.creation_only:
         logging.info("Stopped after creating turbomole files.")
         logging.info("__________________________")
         quit()
 
-    maxdir = len(dirlist)
+    maxdir = len(list_dir_jobex)
 
     for i in range(mx_parallel_calculations):
-        if len(dirlist) > i:
-            launch_job(dirlist[i])
+        if len(list_dir_jobex) > i:
+            launch_job(list_dir_jobex[i])
         else: break
 
-    s.enter(0, 1, checkloop, (s,))
+    s.enter(0, 1, checkloop_jobex, (s,))
     s.run()
 
 def initlog():
     logging.basicConfig(filename='/home/barres/log.log', level=logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
     logging.info("__________________________")
     logging.info("Process started")
+
 
 if __name__ == "__main__":
     initlog()
