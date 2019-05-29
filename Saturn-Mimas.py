@@ -1,5 +1,4 @@
 import time
-import datetime
 import argparse
 import logging
 import subprocess
@@ -9,26 +8,28 @@ import sys
 from shutil import copyfile
 import sched
 
-binput= True
+user_input = True
 shrink = False
 spr = "---\n"*5
-rroot = os.getcwd()
 cores_per_calc=2
-mx_paralel_calculs = 4
+mx_parallel_calculs = 4
+s = sched.scheduler(time.time, time.sleep)
+
 tcalculs=0
+rroot = os.getcwd()
 dirlist = []
 args = ""
 parser= ""
-s = sched.scheduler(time.time, time.sleep)
+compt = 0
 
 def get_input():
 
-    if binput:
+    if user_input:
         arg1 = ""
         arg2 = ""
         if not shrink: print(spr)
         print("r ridft")
-        print("d dscf")
+        print("d dscf")F
         while arg1 not in ["r", "d"]:
             arg1 = input("Enter first parameter: ").lower()
         if not shrink: print(spr)
@@ -71,7 +72,7 @@ def get_input():
                 if tcalculs>1:
                     ttime1 = time1*units[unit1]
                     while not ans in ["y", "n"]:
-                        ans = input("Certain [y/n]? Total time = {0}".format(time.strftime('%H:%M:%S', time.gmtime(ttime1*((tcalculs//(mx_paralel_calculs+1))+1)))))
+                        ans = input("Certain [y/n]? Total time = {0}".format(time.strftime('%H:%M:%S', time.gmtime(ttime1*((tcalculs//(mx_parallel_calculs+1))+1)))))
                 else: break
             if ans == "y": break
 
@@ -167,9 +168,11 @@ def check_end(path):
     if "GEO_OPT_CONVERGED" in os.listdir():
         logging.info("Process successful in " + path)
         dirlist.remove(path)
+        if len(dirlist)>=mx_parallel_calculs: launch_job(dirlist[mx_parallel_calculs-1])
     elif "GEO_OPT_FAILED" in os.listdir() or "not.converged" in os.listdir():
         logging.info("Process failed in " + path)
         dirlist.remove(path)
+        if len(dirlist)>=mx_parallel_calculs: launch_job(dirlist[mx_parallel_calculs-1])
     else: pass
 
 
@@ -180,9 +183,10 @@ def checkloop(sc):
 
     if not dirlist:
         print("All files done.")
+        logging.info("All files were computed")
         get_result()
         return
-    for i in dirlist:
+    for i in dirlist[:mx_parallel_calculs]:  # Works even if len(dirlist)<mx_parallel_calculs
         check_end(i)
     print(" "*40, end='\r')
     print(str(-len(dirlist)+maxdir) + "/" + str(maxdir) + " files done." + "["+"."*(compt%4)+"]", end="\r")
@@ -200,6 +204,7 @@ def main():
     parser.add_argument("file", help="file or directory name (format xyz to be processed)", type=str)
     parser.add_argument('-f', "--force", action="store_true", help="force the file to be processed")
     parser.add_argument('-s', "--shrink", action="store_true", help="remove input spacing")
+    parser.add_argument('-c', "--creation_only", action="store_true", help="only creates turbomole files, doesn't qsub them")
     args = parser.parse_args()
 
     shrink = (True if args.shrink else False)
@@ -208,33 +213,32 @@ def main():
         trroot = rroot + "/" + args.file
         os.chdir(trroot)
         for i in os.listdir():
-            os.chdir(trroot)
             if i[-4:] == ".xyz":
                 tcalculs += 1
     else: tcalculs = 1
 
     arg1, arg2, time1, time2, name = get_input()
-    compt = 0
 
-
-    os.chdir(rroot)
+    # os.chdir(rroot)
     if os.path.isdir(args.file):
-        print(rroot)
         rroot = rroot + "/" + args.file
         os.chdir(rroot)
         for i in os.listdir():
-            os.chdir(rroot)
+            os.chdir(rroot)  # To put inside the create_job_file
             if i[-4:] == ".xyz":
                 dirlist.append(create_job_files(i, label="_" + i[:-4].replace(".", "_"), arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
     elif os.path.isfile(args.file):
         dirlist.append(create_job_files(args.file, arg1=arg1, arg2=arg2, htime=time1, stime=time2, name=name))
 
-    print(dirlist)
+
+    if args.creation_only: quit()
 
     maxdir = len(dirlist)
 
-    for i in dirlist:
-        launch_job(i)
+    for i in range(mx_parallel_calculs):
+        if len(dirlist) > i:
+            launch_job(dirlist[i])
+        else: break
 
     s.enter(0, 1, checkloop, (s,))
     s.run()
@@ -242,8 +246,7 @@ def main():
 
 def initlog():
     logging.basicConfig(filename='test_log.log', level=logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
-
-    logging.info(str(datetime.datetime.now()) + " -- process started")
+    logging.info("Process started")
 
 if __name__ == "__main__":
     initlog()
@@ -255,6 +258,6 @@ if __name__ == "__main__":
         logging.info("__________________________")
         sys.exit(0)
     except Exception as e:
-        logging.info(e)
+        logging.info(str(e))
         logging.info("__________________________")
         sys.exit(0)

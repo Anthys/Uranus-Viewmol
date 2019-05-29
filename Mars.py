@@ -44,9 +44,9 @@ for i in range(100):
     print(" "*10, end='\r')
     print("."*(i%5), end="\r")
 """
-
+"""
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
-    """
+    
     Call in a loop to create terminal progress bar
     @params:
         iteration   - Required  : current iteration (Int)
@@ -56,7 +56,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         decimals    - Optional  : positive number of decimals in percent complete (Int)
         length      - Optional  : character length of bar (Int)
         fill        - Optional  : bar fill character (Str)
-    """
+    
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
@@ -78,3 +78,11 @@ for i, item in enumerate(items):
     sleep(0.1)
     # Update Progress Bar
     printProgressBar(i + 1, l, prefix = 'Progress:', suffix = 'Complete', length = 50)
+"""
+
+import time
+
+l=[i for i in range(10)]
+
+for i in (l[:1230]):
+    print(1)
