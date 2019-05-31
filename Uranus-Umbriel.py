@@ -171,7 +171,7 @@ def launch_job(path, operation):
     os.chdir(path)
     
     if operation == 'o':
-        os.system("gtm " + "-r" + " " + "-o")
+        os.system("gtm")
         time.sleep(0.1)
         os.system("qsub -N "+ name + "_minimum" + " submit.job")
         logging.info("Optimisation minimum started in " + path)
@@ -210,12 +210,7 @@ def launch_job(path, operation):
             logging.info("Error in " + path + " -- " + str(e))
             return
         else: pass
-        r_file = o_file.read()
-        o_file.close()
-        r_file = r_file.replace("jobex -c 100", "aoforce > aoforce.log")
-        o_file = open("submit.job", "w")
-        o_file.write(r_file)
-        o_file.close()
+        write_submit("aoforce > aoforce.log")
         os.system("qsub -N " + name + "_frequency" + " submit.job")
         logging.info("Frequency calculation started in " + path)
 
