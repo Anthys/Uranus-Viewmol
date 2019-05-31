@@ -28,6 +28,7 @@ texto = {
 }
 s = sched.scheduler(time.time, time.sleep)
 turbocheck = False
+stdscr = ""
 
 rroot = os.getcwd()
 args = ""
@@ -158,6 +159,9 @@ def main():
         logging.info("__________________________")
         quit()
 
+
+    initcurse()
+
     s.enter(0, 1, checkloop)
     s.run()
 
@@ -185,7 +189,7 @@ def launch_job(path, operation):
         mx_orbital = 0
         if match:
             mx_orbital = match.group(1)
-            print("Highest occupied orbital: " +  mx_orbital)
+            logging.info("For " + path + " , highest occupied orbital: " + str(mx_orbital))
         else:
             logging.info("Error in " + path + " -- No occupied orbitals found in submit.job")
             return
@@ -212,7 +216,7 @@ def launch_job(path, operation):
         o_file = open("submit.job", "w")
         o_file.write(r_file)
         o_file.close()
-        os.system("gsub -N " + name + "_frequency" + " submit.job")
+        os.system("qsub -N " + name + "_frequency" + " submit.job")
         logging.info("Frequency calculation started in " + path)
 
 
@@ -257,28 +261,27 @@ def checkloop():
             
             if i == "f":
                 if "aoforce.log" in os.listdir():
-                    logging.info("Frequency successfully calculated in " + i)
+                    logging.info("Frequency successfully calculated in " + path)
                     advancement[i].remove(path)
                     advancement["compteur"][i] += 1
-                    nextoperation(path, indx)
+                    nextoperation(path, indx)q
 
     os.chdir(rroot)    
     while csum <= mx_parallel_calculations and wsum>0: 
         csum, wsum = checktoadvance(csum, wsum)
     sm = check_end()
     #print(" "*5, end='\r')
-    tempstring = ""
+    tempstring = []
     for i in operations:
-        tempstring+= "Files done in " + texto[i] + ": " + str(advancement["compteur"][i]) + "/" + str(len(advancement["all"])) + "\n"
+        tempstring+= ["For " + texto[i] + ": " + str(advancement["compteur"][i]) + "/" + str(len(advancement["all"]))]
     #tempstring+= "Total progress: " + str(sm) + "/" + str(total) + "["+"."*(compt%4)+"]"
     reportprogress(tempstring, sm, total)
     #print(tempstring, end="\r")
     s.enter(3, 1, checkloop)
 
 def reportprogress(progstring, sm, total):
-    global compt
-    compt += 1
     """progress: 0-10"""
+    stdscr.clear()
     stdscr.addstr(0, 0, "Total progress: {0}/{1} [{2:11}]".format(str(sm), str(total), "#" * (compt % 11)))
     for i in range(len(progstring)):
         stdscr.addstr(i + 1, 5, progstring[i])
@@ -292,15 +295,15 @@ def progagate_error(i_of_error):
     print("Error found at step " + str(i_of_error) + " ," + str(len(operations)-i_of_error) + " operations won't be done.")
 
 
-
 def nextoperation(path, lastindx):
     global advancement
     if lastindx + 1 < len(operations):
 
-        if operations[lastindx] in ["O"]: #List of the operations that doesn't modify the turbo files, and can thus be done at the same time with others calculations
+        advancement["waiting"][operations[lastindx + 1]].append(path)
+
+        if operations[lastindx+1] in ["O"]: #List of the operations that doesn't modify the turbo files, and can thus be done at the same time with others calculations
             nextoperation(path, lastindx+1)
 
-        advancement["waiting"][operations[lastindx + 1]].append(path)
 
 
 def checktoadvance(csum, wsum):
@@ -322,11 +325,7 @@ def check_end():
     sm = sum(i for i in advancement["compteur"].values())
     if sm >= total:
         if subprocess.getoutput(["qstat"]) == "":
-            print("")
-            print("All files done.")
-            logging.info("All files were computed")
-            logging.info("__________________________")
-            quit()
+            clean_quit()
     return sm
 
 
@@ -348,11 +347,24 @@ def initargs():
     args = parser.parse_args()
 
 
-if __name__ == "__main__":
-
+def initcurse():
+    global stdscr
     stdscr = curses.initscr()
     curses.noecho()
     curses.cbreak()
+
+def clean_quit():
+    curses.echo()
+    curses.nocbreak()
+    curses.endwin()
+    print("")
+    print("All files done.")
+    logging.info("All files were computed")
+    logging.info("__________________________")
+    sys.exit(0)
+
+
+if __name__ == "__main__":
 
     initargs()
     initlog()

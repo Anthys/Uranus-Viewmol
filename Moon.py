@@ -29,10 +29,14 @@ s = sched.scheduler(time.time, time.sleep)
 sm = 1
 total = 2
 compt = 0
-progstring = ["test", "test2"]
+progstring = []
+for i in ["0", "o", "f"]:
+    progstring += ["Files done in 1 YES."]
 
 def checkloop():
+    stdscr.clear()
     report_progress(progstring)
+    if compt == 3: print("Yes")
     s.enter(1, 1, checkloop)
 
 def report_progress(progstring):
