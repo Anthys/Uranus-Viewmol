@@ -19,6 +19,8 @@ if match:
 else:
     logging.info("Error in " + path + " -- No occupied orbitals found in submit.job")
 """
+
+""""
 import sched
 import time
 import curses
@@ -42,7 +44,6 @@ def checkloop():
 def report_progress(progstring):
     global compt
     compt += 1
-    """progress: 0-10"""
     stdscr.addstr(0, 0, "Total progress: {0}/{1} [{2:11}]".format(str(sm), str(total),"#" * (compt%11)))
     for i in range(len(progstring)):
         stdscr.addstr(i+1, 5, progstring[i])
@@ -53,14 +54,20 @@ if __name__ == "__main__":
     curses.noecho()
     curses.cbreak()
     s.enter(0, 1, checkloop)
-    s.run()
-    """
-    try:
-        for i in range(10):
-            report_progress("file_{0}.txt".format(i), i+1)
-            time.sleep(1)
-    finally:
-        curses.echo()
-        curses.nocbreak()
-        curses.endwin()
-    """
+    s.run()    
+"""
+
+import re
+
+ffile = open("submit.job")
+fread = ffile.read()
+ffile.close()
+
+mtc = re.search(r"###BEGIN_COMMANDS\n(.*)\n###END_COMMANDS\n", fread, re.MULTILINE)
+
+if mtc:
+   fread = fread.replace(mtc.group(), "###BEGIN_COMMANDS\njobex -c 100\n###END_COMMANDS\n")
+
+ffile = open("submit.job", "w")
+ffile.write(fread)
+ffile.close()

@@ -4,6 +4,7 @@
     <list default="true" id="9903dc35-67a4-4c2c-9247-06958f93c531" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Moon.py" beforeDir="false" afterPath="$PROJECT_DIR$/Moon.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Uranus-Umbriel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Uranus-Umbriel.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,17 +13,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.37104377">
+    <splitter split-orientation="horizontal" split-proportion="0.5131313">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Moon.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="156">
-                  <caret line="33" column="16" selection-start-line="33" selection-start-column="16" selection-end-line="33" selection-end-column="16" />
-                  <folding>
-                    <element signature="e#462#474#0" expanded="true" />
-                  </folding>
+                <state relative-caret-position="425">
+                  <caret line="61" selection-start-line="61" selection-end-line="72" selection-end-column="13" />
                 </state>
               </provider>
             </entry>
@@ -103,7 +101,7 @@
             <entry file="file://$PROJECT_DIR$/Uranus-Umbriel.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="-70">
-                  <caret line="231" column="12" lean-forward="true" selection-start-line="231" selection-start-column="12" selection-end-line="231" selection-end-column="12" />
+                  <caret line="248" column="12" lean-forward="true" selection-start-line="248" selection-start-column="12" selection-end-line="248" selection-end-column="12" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -123,18 +121,6 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="120">
-                  <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-                  <folding>
-                    <element signature="e#64#81#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
         </leaf>
       </split-first>
       <split-second>
@@ -142,8 +128,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Uranus-Umbriel.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="420">
-                  <caret line="284" column="20" lean-forward="true" selection-start-line="284" selection-start-column="20" selection-end-line="284" selection-end-column="20" />
+                <state relative-caret-position="440">
+                  <caret line="221" column="9" selection-start-line="221" selection-start-column="9" selection-end-line="221" selection-end-column="9" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -421,7 +407,7 @@
       <workItem from="1559126144284" duration="1065000" />
       <workItem from="1559128645566" duration="11526000" />
       <workItem from="1559148084649" duration="308000" />
-      <workItem from="1559286346708" duration="3644000" />
+      <workItem from="1559286346708" duration="10930000" />
     </task>
     <task id="LOCAL-00001" summary="upd">
       <created>1559037018810</created>
@@ -563,11 +549,25 @@
       <option name="project" value="LOCAL" />
       <updated>1559145659951</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="curses + format">
+      <created>1559290034350</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1559290034350</updated>
+    </task>
+    <task id="LOCAL-00022" summary="curses + format">
+      <created>1559293424760</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1559293424760</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="69588000" />
+    <option name="totallyTimeSpent" value="76874000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-4" width="1857" height="1085" extended-state="6" />
@@ -618,10 +618,11 @@
     <MESSAGE value="Calculating orbitals improv" />
     <MESSAGE value="Function to calculate frequencies" />
     <MESSAGE value="not tested - frequency" />
-    <option name="LAST_COMMIT_MESSAGE" value="not tested - frequency" />
+    <MESSAGE value="curses + format" />
+    <option name="LAST_COMMIT_MESSAGE" value="curses + format" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/StagePro$Moon.coverage" NAME="Moon Coverage Results" MODIFIED="1559288434402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/StagePro$Moon.coverage" NAME="Moon Coverage Results" MODIFIED="1559296088770" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Jupiter.coverage" NAME="Jupiter Coverage Results" MODIFIED="1558970171380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Venus.coverage" NAME="Venus Coverage Results" MODIFIED="1559139188214" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Earth.coverage" NAME="Earth Coverage Results" MODIFIED="1558962275845" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -701,16 +702,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-          <folding>
-            <element signature="e#64#81#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Uranus.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="584">
@@ -731,12 +722,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Saturn.py">
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="899">
-          <caret line="123" column="1" selection-start-line="123" selection-start-column="1" selection-end-line="123" selection-end-column="34" />
+        <state relative-caret-position="135">
+          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#64#81#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -751,20 +742,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Saturn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="899">
+          <caret line="123" column="1" selection-start-line="123" selection-start-column="1" selection-end-line="123" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Moon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="33" column="16" selection-start-line="33" selection-start-column="16" selection-end-line="33" selection-end-column="16" />
-          <folding>
-            <element signature="e#462#474#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="425">
+          <caret line="61" selection-start-line="61" selection-end-line="72" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Uranus-Umbriel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="284" column="20" lean-forward="true" selection-start-line="284" selection-start-column="20" selection-end-line="284" selection-end-column="20" />
+        <state relative-caret-position="440">
+          <caret line="221" column="9" selection-start-line="221" selection-start-column="9" selection-end-line="221" selection-end-column="9" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

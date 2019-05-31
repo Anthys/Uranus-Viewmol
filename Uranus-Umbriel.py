@@ -219,6 +219,19 @@ def launch_job(path, operation):
         os.system("qsub -N " + name + "_frequency" + " submit.job")
         logging.info("Frequency calculation started in " + path)
 
+def write_submit(arg):
+    ffile = open("submit.job")
+    fread = ffile.read()
+    ffile.close()
+
+    mtc = re.search(r"###BEGIN_COMMANDS\n(.*)\n###END_COMMANDS\n", fread, re.MULTILINE)
+
+    if mtc:
+        fread = fread.replace(mtc.group(), "###BEGIN_COMMANDS\n" + arg + "\n###END_COMMANDS\n")
+
+    ffile = open("submit.job", "w")
+    ffile.write(fread)
+    ffile.close()
 
 def checkloop():
 
@@ -264,7 +277,7 @@ def checkloop():
                     logging.info("Frequency successfully calculated in " + path)
                     advancement[i].remove(path)
                     advancement["compteur"][i] += 1
-                    nextoperation(path, indx)q
+                    nextoperation(path, indx)
 
     os.chdir(rroot)    
     while csum <= mx_parallel_calculations and wsum>0: 
