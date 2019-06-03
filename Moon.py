@@ -56,7 +56,7 @@ if __name__ == "__main__":
     s.enter(0, 1, checkloop)
     s.run()    
 """
-
+"""
 import re
 
 ffile = open("submit.job")
@@ -71,3 +71,4 @@ if mtc:
 ffile = open("submit.job", "w")
 ffile.write(fread)
 ffile.close()
+"""

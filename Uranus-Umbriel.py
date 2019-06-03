@@ -11,12 +11,6 @@ import sched
 import re
 import curses
 
-## Put something to move a file to the next operation waiting queue if it enters the top orbital waiting queue
-## Check that when you ask an operation O in input, the computer proposes you to do the optimisation minimum before, idem for frequency (Dictionary with dependencies)
-## For the operation O launch, modify also the submit.job with a regular experssion in case it is after something. Idem for o
-## POUR ETRE SUR, METTRE UNE VERIFICATION QUI CHECK QSTAT ET QUI EMPECHE DE DEPASSER 4
-
-
 user_input = True
 shrink = False
 spr = "---\n"*5
@@ -24,7 +18,16 @@ mx_parallel_calculations = 4
 texto = {
     "o": "optimisation minimum",
     "O": "top orbitals calculation",
-    "f": "frequency calculations"
+    "f": "force calculations",
+    "x": "exited states calculation"
+}
+symtable = {
+    "d2h": ["ag", "b1g", "b2g", "b3g", "au", "b1u", "b2u", "b3u"],
+    "d2": ["a", "b1", "b2", "b3"],
+    "c2h": ["ag", "bg", "au", "bu"],
+    "c2v": ["a1", "a2", "b2", "b2"],
+    "cs": ["a'", 'a"'],
+    "c1": ["a"]
 }
 s = sched.scheduler(time.time, time.sleep)
 turbocheck = False
@@ -38,12 +41,14 @@ name = "alphatest"
 operations = ""
 advancement = {}
 total = 0
+tempstring = []
+sm = 0
 
 def get_input():
 
     name = ""
     useturbo = 0
-    operations = "oOf"
+    operations = "oOfx"
 
     if not shrink: print(spr)
 
@@ -60,15 +65,14 @@ def get_input():
                     useturbo = input("Enter choice: ")
 
                 if useturbo in ['', "n"]: useturbo = False
-                elif useturbo == "n": useturbo = True
+                elif useturbo == "u": useturbo = True
                 break
 
     if args.complete:
         print("##  Operations choice:")
-        print("D default process (optimisation minimum + Orbitals .cub + frequency calculation")
-        print("o optimisation minimum")
-        print("O get cub files of the two top orbitals")
-        print("f frequency calculation")
+        print("D default process (optimisation minimum + Orbitals .cub + frequency calculation + exited states")
+        for i,j in texto.items():
+            print(i + " " + j)
         done1 = False
         while not done1:
             operations = input("Enter operations required (can do multiple, order matters):")
@@ -76,17 +80,17 @@ def get_input():
             input_error=""
             operations = operations.replace(" ", "")
             if operations == "": operations = "D"
-            if operations == "D": operations = "oOf"
+            if operations == "D": operations = "oOfx"
             else:
                 for indx in range(len(operations)):
                     i = operations[indx]
-                    if i not in ["o", "f", "O"]:
+                    if i not in ["o", "f", "O", "x"]:
                         done1 = False
                         print("Wrong character")
                         break
                     elif i in ["O", "f"]:
-                        if not "o" in operations[:indx]:
-                            input_error+= texto[i].capitalize() + " found without optimal minium.\n"
+                        if not useturbo and not "o" in operations[:indx]:
+                            input_error+= texto[i].capitalize() + " found without optimal minimum.\n"
                             operations = "o" + operations[:]
                     elif i == "t":
                         print("Need translational vector")
@@ -204,15 +208,66 @@ def launch_job(path, operation):
         logging.info("Orbital calculation started in " + path)
     
     elif operation == "f":
+        """
         try:
             o_file= open("submit.job")
         except Exception as e:
             logging.info("Error in " + path + " -- " + str(e))
             return
         else: pass
+        """
         write_submit("aoforce > aoforce.log")
         os.system("qsub -N " + name + "_frequency" + " submit.job")
         logging.info("Frequency calculation started in " + path)
+
+    elif operation == "x":
+        write_sym()
+        write_submit("escf > escf.log")
+        os.system("qsub -N " + name + "_exited" + " submit.job")
+        logging.info("Exited states calculation started in " + path)
+
+
+def write_sym():
+    a = open("control")
+    b = a.read()
+    a.close()
+    mtc = re.search("\$symmetry (\w*)\n", b)
+    tsym = ''
+    if mtc:
+        tsym = mtc.group(1)
+        logging.info("Symmetry of molecule: " + tsym)
+    else: logging.info("No symmetry found")
+
+    tstring = ''
+    for i in symtable[tsym]:
+        tstring += " " + i + "          " + str(100//len(symtable[tsym])) + "\n"
+
+    b.replace("$end", "$scfinstab rpas\n$soes\n" + tstring + "$denconv 1d-7\n$last step     define\n$end")
+    a = open("control", "w")
+    a.write(b)
+    a.close()
+
+
+def get_sym(path):
+    os.chdir(path)
+    pass
+
+
+def force_sym(path):
+    pass
+
+def remove_cleanend(path, include="", exclude = ""):
+    os.chdir(path)
+    ofile = open("submit.job")
+    rfile = ofile.read()
+    ofile.close()
+    rfile = rfile.replace("#trap 'CleanExit", "#")
+    excl = "--exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' " + ("--exclude '*." + exclude + "' " if exclude else "")
+    incl = ("--include '*." + include + "' " if include else "")
+    rfile = rfile.replace("CleanExit", "rsync -rva" + excl + incl + "${TMPDIR}/ ${SGE_O_WORKDIR}/")
+    ofile = open("submit.job")
+    ofile.write(rfile)
+    ofile.close()
 
 def write_submit(arg):
     ffile = open("submit.job")
@@ -230,62 +285,70 @@ def write_submit(arg):
 
 def checkloop():
 
-    global compt, advancement
+    global compt, advancement, tempstring, sm
     compt+=1
 
-    csum = 0 #Current processing files sum
-    wsum = 0 #Waiting files sum
-    for indx in range(len(operations)):
-        i = operations[indx]
-        for tpath in advancement["waiting"][i]:
-            wsum += 1
-        for path in advancement[i]:
-            csum += 1
-            
-            os.chdir(path)
+    if compt%2 == 0:
+        csum = 0 #Current processing files sum
+        wsum = 0 #Waiting files sum
+        for indx in range(len(operations)):
+            i = operations[indx]
+            for tpath in advancement["waiting"][i]:
+                wsum += 1
+            for path in advancement[i]:
+                csum += 1
 
-            if i == "o":
-                if "GEO_OPT_CONVERGED" in os.listdir():
-                    logging.info("Optimisation minimum successful in " + path)
-                    advancement[i].remove(path)
-                    advancement["compteur"][i] += 1
-                    nextoperation(path, indx)
-                elif "GEO_OPT_FAILED" in os.listdir() or "not.converged" in os.listdir():
-                    logging.info("Optimisation failed in " + path)
-                    logging.info("Stopping process of this file to prevent global disaster")
-                    advancement[i].remove(path)
-                    progagate_error(indx)
-            
-            if i == "O":
-                tcompt = 0
-                for j in os.listdir():
-                    if ".cub" in j:
-                        tcompt+=1
-                if tcompt>=2:
-                    logging.info("Two orbitals found in " + path)
-                    advancement[i].remove(path)
-                    advancement["compteur"][i] += 1
-                    #nextoperation(path, indx) # Is already handled by the nextoperation function
-            
-            if i == "f":
-                if "aoforce.log" in os.listdir():
-                    logging.info("Frequency successfully calculated in " + path)
-                    advancement[i].remove(path)
-                    advancement["compteur"][i] += 1
-                    nextoperation(path, indx)
+                os.chdir(path)
 
-    os.chdir(rroot)    
-    while csum <= mx_parallel_calculations and wsum>0: 
-        csum, wsum = checktoadvance(csum, wsum)
-    sm = check_end()
-    #print(" "*5, end='\r')
-    tempstring = []
-    for i in operations:
-        tempstring+= ["For " + texto[i] + ": " + str(advancement["compteur"][i]) + "/" + str(len(advancement["all"]))]
-    #tempstring+= "Total progress: " + str(sm) + "/" + str(total) + "["+"."*(compt%4)+"]"
+                if i == "o":
+                    if "GEO_OPT_CONVERGED" in os.listdir():
+                        logging.info("Optimisation minimum successful in " + path)
+                        advancement[i].remove(path)
+                        advancement["compteur"][i] += 1
+                        nextoperation(path, indx)
+                    elif "GEO_OPT_FAILED" in os.listdir() or "not.converged" in os.listdir():
+                        logging.info("Optimisation failed in " + path)
+                        logging.info("Stopping process of this file to prevent global disaster")
+                        advancement[i].remove(path)
+                        progagate_error(indx)
+
+                if i == "O":
+                    tcompt = 0
+                    for j in os.listdir():
+                        if ".cub" in j:
+                            tcompt+=1
+                    if tcompt>=2:
+                        logging.info("Two orbitals found in " + path)
+                        advancement[i].remove(path)
+                        advancement["compteur"][i] += 1
+                        #nextoperation(path, indx) # Is already handled by the nextoperation function
+
+                if i == "f":
+                    if "aoforce.log" in os.listdir():
+                        logging.info("Frequency successfully calculated in " + path)
+                        advancement[i].remove(path)
+                        advancement["compteur"][i] += 1
+                        nextoperation(path, indx)
+
+                if i == "x":
+                    if "escf.log" in os.listdir():
+                        logging.info("Exited states successfully calculated in " + path)
+                        advancement[i].remove(path)
+                        advancement["compteur"][i] += 1
+                        nextoperation(path, indx)
+
+        os.chdir(rroot)
+        while csum <= mx_parallel_calculations and wsum>0:
+            csum, wsum = checktoadvance(csum, wsum)
+        sm = check_end()
+        #print(" "*5, end='\r')
+        tempstring = []
+        for i in operations:
+            tempstring+= [texto[i].capitalize() + ": " + str(advancement["compteur"][i]) + "/" + str(len(advancement["all"]))]
+        #tempstring+= "Total progress: " + str(sm) + "/" + str(total) + "["+"."*(compt%4)+"]"
+        #print(tempstring, end="\r")
     reportprogress(tempstring, sm, total)
-    #print(tempstring, end="\r")
-    s.enter(3, 1, checkloop)
+    s.enter(1, 1, checkloop)
 
 def reportprogress(progstring, sm, total):
     """progress: 0-10"""
@@ -300,7 +363,7 @@ def progagate_error(i_of_error):
     global total
     total -= len(operations) - i_of_error
     print("")
-    print("Error found at step " + str(i_of_error) + " ," + str(len(operations)-i_of_error) + " operations won't be done.")
+    logging.info("Error found at step " + str(i_of_error) + " ," + str(len(operations)-i_of_error) + " operations won't be done.")
 
 
 def nextoperation(path, lastindx):
@@ -345,15 +408,17 @@ def initlog():
 
 def initargs():
 
-    global parser, args
+    global parser, args, turbocheck
 
     parser = argparse.ArgumentParser(description='SaturnCommand')
     parser.add_argument("file", help='file or directory name (format xyz to be processed)', type=str)
     parser.add_argument("-s", "--shrink", action='store_true', help="remove input spacing")
     parser.add_argument("-c", "--complete", action="store_true", help="customize process")
+    parser.add_argument("-t", "--turbo", action="store_true", help="use turbo files")
     parser.add_argument('-create', "--creation_only", action="store_true", help="only creates turbomole files, doesn't qsub them")
     args = parser.parse_args()
 
+    if args.turbo: turbocheck = True
 
 def initcurse():
     global stdscr
