@@ -230,7 +230,6 @@ def launch_job(path, operation):
 def write_sym():
     a = open("control")
     b = a.read()
-    a.close()
     mtc = re.search("\$symmetry (\w*)\n", b)
     tsym = ''
     if mtc:
@@ -242,7 +241,9 @@ def write_sym():
     for i in symtable[tsym]:
         tstring += " " + i + "          " + str(100//len(symtable[tsym])) + "\n"
 
-    b.replace("$end", "$scfinstab rpas\n$soes\n" + tstring + "$denconv 1d-7\n$last step     define\n$end")
+    b = b.replace("$end", "$scfinstab rpas\n$soes\n" + tstring + "$denconv 1d-7\n$last step     define\n$end")
+    logging.info(b)
+    a.close()
     a = open("control", "w")
     a.write(b)
     a.close()
@@ -256,7 +257,7 @@ def get_sym(path):
 def force_sym(path):
     pass
 
-def remove_cleanend(path, include="", exclude = ""):
+def remove_clean_end(path, include="", exclude = ""):
     os.chdir(path)
     ofile = open("submit.job")
     rfile = ofile.read()
