@@ -1,0 +1,9 @@
+{% if random_books %}
+    <ul>
+    {% for book in random_books %}
+        <li><a href="{{book.author.id}}/{{book.id}}">{{book.book_title}} - {{book.author.author_name}}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No books are available.</p>
+{% endif %}

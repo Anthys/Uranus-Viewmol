@@ -11,6 +11,7 @@ import sched
 import re
 import curses
 
+progname = "Uranus-Oberon"
 user_input = True
 shrink = False
 spr = "---\n"*5
@@ -19,7 +20,8 @@ texto = {
     "o": "optimisation minimum",
     "O": "top orbitals calculation",
     "f": "force calculations",
-    "x": "exited states calculation"
+    "x": "exited states calculation",
+    "X": "Panama"
 }
 symtable = {
     "d2h": ["ag", "b1g", "b2g", "b3g", "au", "b1u", "b2u", "b3u"],
@@ -48,7 +50,8 @@ def get_input():
 
     name = ""
     useturbo = 0
-    operations = "oOfx"
+    DEFAULT = "oOfxX"
+    operations = DEFAULT
 
     if not shrink: print(spr)
 
@@ -80,11 +83,11 @@ def get_input():
             input_error=""
             operations = operations.replace(" ", "")
             if operations == "": operations = "D"
-            if operations == "D": operations = "oOfx"
-            else:
+            if operations == "D": operations = DEFAULT
+            elif not args.forcing:
                 for indx in range(len(operations)):
                     i = operations[indx]
-                    if i not in ["o", "f", "O", "x"]:
+                    if i not in ["o", "f", "O", "x", "X"]:
                         done1 = False
                         print("Wrong character")
                         break
@@ -92,6 +95,9 @@ def get_input():
                         if not useturbo and "o" not in operations[:indx]:
                             input_error+= texto[i].capitalize() + " found without optimal minimum.\n"
                             operations = "o" + operations[:]
+                    elif i in ["X"]:
+                        if not useturbo and not set(["o", "x"]).issubset(operations[:indx]):
+                            operations = "ox" + operations[:]
                     elif i == "t":
                         print("Need translational vector")
                         done1 = False
@@ -214,6 +220,8 @@ def launch_job(path, operation):
         o_file = open("control", "w")
         o_file.write(r_file)
         o_file.close()
+        #remove_clean_end(path, include=".cub")
+        make_command(endcmd="rsync -rva" + "--exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' " + "${TMPDIR}/" + ".cub" + " ${SGE_O_WORKDIR}/")
         os.system("qsub -N "+ name + "_orbitals" + " submit.job")
         logging.info("Orbital calculation started in " + path)
     
@@ -228,7 +236,8 @@ def launch_job(path, operation):
             return
         else: pass
         """
-        write_submit("aoforce > aoforce.log")
+        #write_submit("aoforce > aoforce.log")
+        make_command(startcmd='aoforce > aoforce.log')
         os.system("qsub -N " + name + "_frequency" + " submit.job")
         logging.info("Frequency calculation started in " + path)
 
@@ -236,10 +245,55 @@ def launch_job(path, operation):
         if "escf.log" in os.listdir():
             os.remove("escf.log")
         write_sym()
-        write_submit("escf > escf.log")
+        #write_submit("escf > escf.log")
+        make_command(startcmd="escf > escf.log")
         os.system("qsub -N " + name + "_exited" + " submit.job")
         logging.info("Exited states calculation started in " + path)
 
+    elif operation == "X":
+        copyfile("../" + progname + ".py", "./" + progname + ".py")
+        make_command(endcmd="rsync -rva panama_files ${SGE_O_WORKDIR}", startcmd="scl enable rh-python36 'python3 " + progname + ".py -panama panaNone > panama.log'")
+        os.system("qsub -N " + name + "_panama" + " submit.job")
+        logging.info("Panama calculations started in " + path)
+        pass
+
+def make_command(endcmd="", startcmd=""):
+    outputend = ""
+    outputstart = ""
+    if endcmd:
+        rfile = open("submit.job")
+        check = False
+        for line in rfile:
+            if check:
+                outputend += line
+            elif "###END_COMMANDS" in line:
+                check = True
+                outputend += line
+        rfile.close()
+
+    if startcmd:
+        rfile = open("submit.job")
+        check = False
+        for line in rfile:
+            if "###END_COMMANDS" in line:
+                check = False
+            if check:
+                outputstart += line
+            elif "###BEGIN_COMMANDS" in line:
+                check = True
+                outputstart += line
+        rfile.close()
+
+    rfile = open("submit.job")
+    ftext = rfile.read()
+    if startcmd:
+        ftext = ftext.replace(outputstart, "###BEGIN_COMMANDS\n" + startcmd + "\n")
+    if endcmd:
+        ftext = ftext.replace(outputend, "###END_COMMANDS\n" + endcmd + "\n")
+    rfile.close()
+    wfile = open("submit.job", "w")
+    wfile.write(ftext)
+    wfile.close()
 
 def write_sym():
     a = open("control")
@@ -256,7 +310,6 @@ def write_sym():
         tstring += " " + i + "          " + str(100//len(symtable[tsym])) + "\n"
 
     b = b.replace("$end", "$scfinstab rpas\n$soes\n" + tstring + "$denconv 1d-7\n$last step     define\n$end")
-    logging.info(b)
     a.close()
     a = open("control", "w")
     a.write(b)
@@ -271,7 +324,7 @@ def get_sym(path):
 def force_sym(path):
     pass
 
-def remove_clean_end(path, include="", exclude = ""):
+def remove_clean_end(path, include="", exclude = "", dir=""): #A REMPLACER PAR MAKECOMMAND
     if include:
         include = "*" + include
     os.chdir(path)
@@ -280,12 +333,15 @@ def remove_clean_end(path, include="", exclude = ""):
     ofile.close()
     rfile = rfile.replace("#trap 'CleanExit", "#")
     excl = "--exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' " + ("--exclude '*." + exclude + "' " if exclude else "")
-    rfile = rfile.replace("CleanExit", "rsync -rva" + excl + "${TMPDIR}/" + include + " ${SGE_O_WORKDIR}/")
+    if dir:
+        rfile = "rsync -rva panama_files ${SGE_O_WORKDIR}"
+    else:
+        rfile = rfile.replace("CleanExit", "rsync -rva" + excl + "${TMPDIR}/" + include + " ${SGE_O_WORKDIR}/")
     ofile = open("submit.job")
     ofile.write(rfile)
     ofile.close()
 
-def write_submit(arg):
+def write_submit(arg): # A REMPLACER PAR MAKECOMMAND
     ffile = open("submit.job")
     fread = ffile.read()
     ffile.close()
@@ -353,6 +409,13 @@ def checkloop():
                         advancement["compteur"][i] += 1
                         nextoperation(path, indx)
 
+                if i == "X":
+                    if "panama_files" in os.listdir():
+                        logging.info("Panama files successfully calculated in " + path)
+                        advancement[i].remove(path)
+                        advancement["compteur"][i] += 1
+                        nextoperation(path, indx)
+
         os.chdir(rroot)
         while csum <= mx_parallel_calculations and wsum>0:
             csum, wsum = checktoadvance(csum, wsum)
@@ -415,6 +478,39 @@ def check_end():
             clean_quit()
     return sm
 
+def panama_(paper):
+    subprocess.run(["mkdir", "panama_files"])
+    rep = 1
+    paper = "escf.log"
+    fobj = open(paper, "r")
+    mtc = ""
+    cmpt = 0
+    orbitals_per_sym = 5
+    for line in fobj:
+      if "I R R E P" in line:
+          cmpt = 0
+          mtc = re.search("I R R E P[ ]*([0-9a-z\"]+)[ ]*", line)
+          mtc = mtc.group(1)
+      if "Excitation energy / eV:" in line and cmpt<orbitals_per_sym:
+            cmpt += 1
+            energ = line[40:48]
+            energ = energ.replace(" ", "")
+            energ = energ.replace("\n", "")
+            for line2 in fobj:
+                if rep == 1:
+                   if "velocity representation:" in line2:
+                      osc = line2[40:65]
+                      energ = float(energ)
+                      minenerg = energ - 0.0001
+                      maxenerg = energ + 0.0001
+                      tempstr = "2\nescf.log\n1\n" + str(minenerg) + "\n" + str(maxenerg) + "\n"
+                      subprocess.run("panama", input=tempstr.encode())
+                      subprocess.run(["dscf", "-proper"])
+                      os.rename("td.plt", "./panama_files/"  + mtc + "_orb_" + str(cmpt) + ".plt")
+                      break
+    fobj.close()
+    print('ALL FILES DONE')
+
 
 def initlog():
     logging.basicConfig(filename='/home/barres/log.log', level=logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
@@ -432,6 +528,8 @@ def initargs():
     parser.add_argument("-c", "--complete", action="store_true", help="customize process")
     parser.add_argument("-t", "--turbo", action="store_true", help="use turbo files")
     parser.add_argument('-create', "--creation_only", action="store_true", help="only creates turbomole files, doesn't qsub them")
+    parser.add_argument("-panama", "--panama", action="store_true", help="DO NOT CALL DIRECTLY, is used for panama calculations")
+    parser.add_argument("-force", "--forcing", action="store_true", help="DO NOT CALL, force operations to be processed")
     args = parser.parse_args()
 
     if args.turbo: turbocheck = True
@@ -457,6 +555,13 @@ if __name__ == "__main__":
 
     initargs()
     initlog()
+
+    if args.panama:
+        try:
+            panama_("escf.log")
+        except Exception as e:
+            pass
+        sys.exit(0)
 
     try:
         main()

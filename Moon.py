@@ -72,3 +72,93 @@ ffile = open("submit.job", "w")
 ffile.write(fread)
 ffile.close()
 """
+"""
+import subprocess
+import os
+from subprocess import run, PIPE
+
+FNULL = open(os.devnull, "w")
+
+p = subprocess.Popen(['python3','MinMun.py'],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
+print(p.communicate(b'yes')[0].decode())
+print(p.communicate(b'no')[0].decode())
+"""
+import re
+import subprocess, os
+"""
+def giveexener(fescfout):
+    output = ""
+    rep = 1
+    fescfout = "escf.log"
+    fobj = open(fescfout, "r")
+    for line in fobj:
+      if "I R R E P" in line:
+          output += line[30:47]
+      if "Excitation energy / eV:" in line:
+            energ = line[40:48]
+            for line2 in fobj:
+                if rep == 1:
+                   if "velocity representation:" in line2:
+                      osc = line2[40:65]
+                      output += energ + " " + osc
+                      break
+                if rep == 2:
+                   if "length representation:" in line2:
+                      osc = line2[40:65]
+                      output += energ + " " + osc
+                      break
+                if rep == 3:
+                   if "mixed representation:" in line2:
+                      osc = line2[40:65]
+                      output += energ + " " + osc
+                      break
+    fobj.close() #close escf.out file
+    fobj = open("exited.file", "w")
+    fobj.write(output)
+    fobj.close()
+
+    rfile = open("exited.file", 'r')
+    for line in rfile:
+        if "I R R E P" in line:
+            mtc = re.search("I R R E P[ ]*([0-9a-z\"]+)[ ]*", line)
+            print(mtc.group(1))
+
+giveexener("escf.log")
+
+print(b"HJANd\n a")
+print("HJANd\n a".encode())
+"""
+def panama_(paper):
+    subprocess.run(["mkdir", "panama_files"])
+    rep = 1
+    paper = "escf.log"
+    fobj = open(paper, "r")
+    mtc = ""
+    cmpt = 0
+    orbitals_per_sym = 5
+    for line in fobj:
+      if "I R R E P" in line:
+          cmpt = 0
+          mtc = re.search("I R R E P[ ]*([0-9a-z\"]+)[ ]*", line)
+          mtc = mtc.group(1)
+      if "Excitation energy / eV:" in line and cmpt<orbitals_per_sym:
+            cmpt += 1
+            energ = line[40:48]
+            energ = energ.replace(" ", "")
+            energ = energ.replace("\n", "")
+            for line2 in fobj:
+                if rep == 1:
+                   if "velocity representation:" in line2:
+                      osc = line2[40:65]
+                      energ = float(energ)
+                      minenerg = energ - 0.0001
+                      maxenerg = energ + 0.0001
+                      tempstr = "2\nescf.log\n1\n" + str(minenerg) + "\n" + str(maxenerg) + "\n"
+                      subprocess.run("panama", input=tempstr.encode())
+                      subprocess.run(["dscf", "-proper"])
+                      os.rename("td.plt", "./panama_files/"  + mtc + "_orb_" + str(cmpt))
+                      break
+    fobj.close()
+    print('ALL FILES DONE')
+
+panama_("escf.log")

@@ -1,0 +1,9 @@
+{% if author %}
+    <h1>{{author.author_name}}</h1>
+<ul>
+    {% for i in author_books %}
+    <li> <a href="{% url 'books:book' author.id i.id %}">{{i.book_title}}</a> </li>
+    {% endfor %}
+</ul>
+<ul> <a href="{% url "books:index" %}">RETURN</a> </ul>
+{% endif %}
