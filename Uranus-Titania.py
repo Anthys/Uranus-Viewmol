@@ -13,7 +13,7 @@ import curses
 
 
 ## CONSTANTS
-progname = "Uranus-Oberon"
+progname = "Uranus-Titania"
 user_input = True
 shrink = False
 turbocheck = False
@@ -53,8 +53,22 @@ total = 0
 sm = 0
 compt = 0
 error_compt = 0
+wrking = False #If function is called in the cluster, is set to True
+visu = True
 
 def get_input():
+
+    if wrking:
+        operations = []
+        for i in args.operations:
+            operations += [i]
+        return operations, ("all_files" if not args.name else args.name), False
+
+    if args.operations and args.name:
+        operations = []
+        for i in args.operations:
+            operations += [i]
+        return operations, ("all_files" if not args.name else args.name), False
 
     name = ""
     useturbo = 0
@@ -94,7 +108,7 @@ def get_input():
             elif not args.forcing:
                 for indx in range(len(operations)):
                     i = operations[indx]
-                    if i not in ["o", "f", "O", "x", "X", "F"]:
+                    if i not in ["o", "f", "O", "x", "X", "F", "$", "£"]:
                         done1 = False
                         print("Wrong character")
                         break
@@ -152,6 +166,14 @@ def main():
 
     operations, name, useturbo = get_input()
 
+    if args.away: #FOR THE MOMENT DOESNT CONSIDER FOLDER OF FILES
+        operations = "".join(operations)
+        os.system("gtm")
+        make_command(startcmd="scl enable rh-python36 'python3 " + progname + ".py -o " + operations + " -n " + name + " -nosub " + args.file + " > superNone.log'", endcmd="rsync -rva" + " --exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' ${TMPDIR}/ ${SGE_O_WORKDIR}/")
+        os.system("qsub -N " + name + "_global" + " submit.job")
+        logging.info("Process all sent to cluster.")
+        sys.exit(0)
+
     for i in operations:
         advancement[i] = []
     
@@ -180,10 +202,16 @@ def main():
         quit()
 
 
-    initcurse()
-
-    s.enter(0, 1, checkloop)
-    s.run()
+    if not wrking:
+        if visu:
+            initcurse()
+        s.enter(0, 1, checkloop)
+        s.run()
+    else:
+        for path in advancement["all"]:
+            for i in operations:
+                launch_job(path, i)
+                logging.info('Remote, ' + i  + " done in "+ path)
 
 
 def launch_job(path, operation):
@@ -191,23 +219,16 @@ def launch_job(path, operation):
     os.chdir(path)
     
     if operation == 'o':
-        """
-        for i in ["GEO_OPT_CONVERGED", "GEO_OPT_FAILED"]:
-            if i in os.listdir():
-                os.remove(i)
-        """
         os.system("gtm")
         time.sleep(0.1)
-        os.system("qsub -N "+ name + "_minimum" + " submit.job")
+        if wrking:
+            os.system("jobex -c 100")
+        else:
+            os.system("qsub -N " + name + "_minimum" + " submit.job")
         logging.info("Optimisation minimum started in " + path)
 
     elif operation == "O":
-        #os.system("gtm " + "-r" + " " + "-o") # To de-comment when I'm certain that this command make the jobex -c 100 in the submit.job bu doesn't modify the other files.
-        """
-        for i in os.listdir():
-            if ".cub" in i:
-                os.remove(i)
-        """
+        os.system("gtm")
         try:
             o_file = open("job.last")
         except Exception as e:
@@ -230,41 +251,43 @@ def launch_job(path, operation):
         o_file = open("control", "w")
         o_file.write(r_file)
         o_file.close()
-        #remove_clean_end(path, include=".cub")
-        make_command(endcmd="rsync -rva" + " --exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' ${TMPDIR}/ ${SGE_O_WORKDIR}/")
-        os.system("qsub -N "+ name + "_orbitals" + " submit.job")
+
+        if wrking:
+            os.system("jobex -c 100")
+        else:
+            make_command(endcmd="rsync -rva" + " --exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' ${TMPDIR}/ ${SGE_O_WORKDIR}/")
+            os.system("qsub -N " + name + "_orbitals" + " submit.job")
         logging.info("Orbital calculation started in " + path)
     
     elif operation == "f":
         if "aoforce.log" in os.listdir():
             os.remove("aoforce.log")
-        """
-        try:
-            o_file= open("submit.job")
-        except Exception as e:
-            logging.info("Error in " + path + " -- " + str(e))
-            return
-        else: pass
-        """
-        #write_submit("aoforce > aoforce.log")
-        make_command(startcmd='aoforce > aoforce.log', endcmd="rsync -rva" + " --exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' " + "${TMPDIR}/" + " ${SGE_O_WORKDIR}/")
-        os.system("qsub -N " + name + "_frequency" + " submit.job")
+        if wrking:
+            os.system("aoforce > aoforce.log")
+        else:
+            make_command(startcmd='aoforce > aoforce.log', endcmd="rsync -rva" + " --exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' " + "${TMPDIR}/" + " ${SGE_O_WORKDIR}/")
+            os.system("qsub -N " + name + "_frequency" + " submit.job")
         logging.info("Frequency calculation started in " + path)
 
     elif operation == "x":
         if "escf.log" in os.listdir():
             os.remove("escf.log")
         write_sym()
-        #write_submit("escf > escf.log")
-        make_command(startcmd="escf > escf.log", endcmd="rsync -rva escf.log ${SGE_O_WORKDIR}/")
-        os.system("qsub -N " + name + "_exited" + " submit.job")
+        if wrking:
+            os.system("escf > escf.log")
+        else:
+            make_command(startcmd="escf > escf.log", endcmd="rsync -rva escf.log ${SGE_O_WORKDIR}/")
+            os.system("qsub -N " + name + "_exited" + " submit.job")
         logging.info("Exited states calculation started in " + path)
 
     elif operation == "X":
         if not operations == ["X"]:
             copyfile("../" + progname + ".py", "./" + progname + ".py")
-        make_command(endcmd="rsync -rva panama_files ${SGE_O_WORKDIR}", startcmd="scl enable rh-python36 'python3 " + progname + ".py -panama panaNone > panama.log'")
-        os.system("qsub -N " + name + "_panama" + " submit.job")
+        if wrking:
+            panama_("paper")
+        else:
+            make_command(endcmd="rsync -rva panama_files ${SGE_O_WORKDIR}",startcmd="scl enable rh-python36 'python3 " + progname + ".py -panama panaNone > panama.log'")
+            os.system("qsub -N " + name + "_panama" + " submit.job")
         logging.info("Panama calculations started in " + path)
 
     elif operation == "F":
@@ -272,6 +295,12 @@ def launch_job(path, operation):
         if "molden.input" in os.listdir():
             os.remove("molden.input")
         subprocess.run("tm2molden", input="\nn\n\nn\n".encode()) #NE MARCHE PAS
+
+    elif operation == "$":
+        os.system("touch test.tset")
+
+    elif operation == "£":
+        os.system("touch test2.tset")
 
 def make_command(endcmd="", startcmd=""):
     outputend = ""
@@ -331,37 +360,6 @@ def write_sym():
     a.write(b)
     a.close()
 
-def remove_clean_end(path, include="", exclude = "", dir=""): #A REMPLACER PAR MAKECOMMAND
-    if include:
-        include = "*" + include
-    os.chdir(path)
-    ofile = open("submit.job")
-    rfile = ofile.read()
-    ofile.close()
-    rfile = rfile.replace("#trap 'CleanExit", "#")
-    excl = "--exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' " + ("--exclude '*." + exclude + "' " if exclude else "")
-    if dir:
-        rfile = "rsync -rva panama_files ${SGE_O_WORKDIR}"
-    else:
-        rfile = rfile.replace("CleanExit", "rsync -rva " + excl + "${TMPDIR}/" + include + " ${SGE_O_WORKDIR}/")
-    ofile = open("submit.job")
-    ofile.write(rfile)
-    ofile.close()
-
-def write_submit(arg): # A REMPLACER PAR MAKECOMMAND
-    ffile = open("submit.job")
-    fread = ffile.read()
-    ffile.close()
-
-    mtc = re.search(r"###BEGIN_COMMANDS\n(.*)\n###END_COMMANDS\n", fread, re.MULTILINE)
-
-    if mtc:
-        fread = fread.replace(mtc.group(), "###BEGIN_COMMANDS\n" + arg + "\n###END_COMMANDS\n")
-
-    ffile = open("submit.job", "w")
-    ffile.write(fread)
-    ffile.close()
-
 def sort_a_file(start_file, end_dir, name=""):
     main_path = "/home/barres/xDatabase"
     if not os.path.isdir(main_path):
@@ -371,9 +369,27 @@ def sort_a_file(start_file, end_dir, name=""):
     if not os.path.isdir(main_path + "/" + args.file[:-4] + "/" + end_dir):
         subprocess.run(["mkdir", main_path + "/" + args.file[:-4] + "/" + end_dir])
     #os.rename(start_file, main_path + "/" + end_dir + "/" + name)
-    copyfile(start_file, main_path + "/" + end_dir + "/" + name)
+    print("---")
+    print(start_file)
+    print(main_path + "/" + args.file[:-4] + "/" + end_dir + "/" + name)
+    if start_file == "panama_files":
+        os.system("cp -r panama_files " + main_path + "/" + args.file[:-4] + "/" + end_dir + "/")
+    copyfile(start_file, main_path + "/" + args.file[:-4] + "/" + end_dir + "/" + (name if name else start_file))
 
+def cleaner(path):
+    os.chdir(path)
 
+    for i in os.listdir():
+        print(i)
+        if i in ["aoforce.log","molden.input"]:
+            sort_a_file(i, "frequency_force_logs")
+        if i == "escf.log":
+            sort_a_file(i, "exited_orbitals")
+        if i == "panama_files":
+            sort_a_file(i, "exited_orbitals")
+        if i[-3:] == ".cub":
+            sort_a_file(i, "top_orbitals")
+    os.chdir("../")
 
 def checkloop():
 
@@ -459,7 +475,8 @@ def checkloop():
         tempstring = []
         for i in operations:
             tempstring+= [texto[i].capitalize() + ": " + str(advancement["compteur"][i]) + "/" + str(len(advancement["all"]))]
-    reportprogress(tempstring, sm, total)
+    if visu:
+        reportprogress(tempstring, sm, total)
     s.enter(1, 1, checkloop)
 
 def reportprogress(progstring, sm, total):
@@ -478,7 +495,7 @@ def progagate_error(i_of_error):
     
     global total
     total -= len(operations) - i_of_error
-    print("")
+    if not wrking: print("")
     logging.info("Error found at step " + str(i_of_error) + " ," + str(len(operations)-i_of_error) + " operations won't be done.")
 
 
@@ -512,7 +529,7 @@ def check_end():
     sm = sum(i for i in advancement["compteur"].values())
     if sm >= total:
         if not subprocess.getoutput(["qstat"]) == "":
-            print("Error may have occured: Queue is still full")
+            if not wrking: print("Error may have occured: Queue is still full")
         clean_quit()
     return sm
 
@@ -526,7 +543,7 @@ def panama_(paper):
     for line in fobj:
       if "I R R E P" in line:
           cmpt = 0
-          mtc = re.search("I R R E P[ ]*([0-9a-z\"]+)[ ]*", line)
+          mtc = re.search("I R R E P[ ]*([0-9a-z\"\']+)[ ]*", line)
           mtc = mtc.group(1)
       if "Excitation energy / eV:" in line and cmpt<orbitals_per_sym:
             cmpt += 1
@@ -546,18 +563,18 @@ def panama_(paper):
                       os.rename("td.plt", "./panama_files/"  + mtc + "_orb_" + str(cmpt) + ".plt")
                       break
     fobj.close()
-    print('ALL FILES DONE')
+    if not wrking: print('ALL FILES DONE')
 
 
 def initlog():
     logging.basicConfig(filename='/home/barres/log.log', level=logging.DEBUG, format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
     logging.info("__________________________")
-    logging.info("Process started")
+    logging.info("Process started" + (" in cluster" if wrking else ""))
 
 
 def initargs():
 
-    global parser, args, turbocheck
+    global parser, args, turbocheck, wrking, visu
 
     parser = argparse.ArgumentParser(description='SaturnCommand')
     parser.add_argument("file", help='file or directory name (format xyz to be processed)', type=str)
@@ -568,9 +585,17 @@ def initargs():
     parser.add_argument("-panama", "--panama", action="store_true", help="DO NOT CALL DIRECTLY, is used for panama calculations")
     parser.add_argument("-force", "--forcing", action="store_true", help="DO NOT CALL, force operations to be processed")
     parser.add_argument("-ns", "--nosort", action="store_true", help="do not sort files and put them in folders")
+    parser.add_argument("-o", dest="operations", help="DO NOT CALL, decides which operations to use")
+    parser.add_argument("-away", "--away", action="store_true", help="All the operations will be called in the cluster. No feedback can be given, but the process can continue without interuption.")
+    parser.add_argument("-n", dest="name", help="Give a name for remote operations, usually, do not call.")
+    parser.add_argument("-clean", '--clean', help="Just clean files", action="store_true")
+    parser.add_argument("-nosub", '--nosub', help="make all calculations on the computer where the program is launched", action="store_true")
+    parser.add_argument("-novisu", '--novisu', help="no visual", action="store_true")
     args = parser.parse_args()
 
     if args.turbo: turbocheck = True
+    if args.nosub: wrking = True
+    if args.novisual: visu = False
 
 
 def initcurse():
@@ -585,8 +610,9 @@ def clean_quit():
     curses.echo()
     curses.nocbreak()
     curses.endwin()
-    print("")
-    print("All files done.")
+    if not wrking:
+        print("")
+        print("All files done.")
     logging.info("All files were computed")
     logging.info("__________________________")
     sys.exit(0)
@@ -604,15 +630,27 @@ if __name__ == "__main__":
             pass
         sys.exit(0)
 
+    elif args.clean:
+        for i in os.listdir():
+            if os.path.isdir(i):
+                try:
+                    cleaner(i)
+                except Exception as e:
+                    logging.info(e)
+        sys.exit(0)
+
     try:
         main()
     except KeyboardInterrupt:
-        print("Interrupted")
+        if not wrking: print("Interrupted")
         logging.info("Process terminated by user command")
         logging.info("__________________________")
     except Exception as e:
         logging.info(str(e))
         logging.info("__________________________")
+
+    if wrking or not visu:
+        sys.exit(0)
 
     curses.echo()
     curses.nocbreak()

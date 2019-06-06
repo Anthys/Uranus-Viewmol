@@ -2,26 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9903dc35-67a4-4c2c-9247-06958f93c531" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MinMun.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Uranus-Oberon.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/djangfile/neptune/books/templates/books/author.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/djangfile/neptune/books/templates/books/book.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/djangfile/neptune/books/templates/books/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/djangfile/neptune/books/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/djangfile/neptune/polls/static/polls/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/djangfile/neptune/templates/admin/base_site.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Uranus-Titania.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Moon.py" beforeDir="false" afterPath="$PROJECT_DIR$/Moon.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uranus-Umbriel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Uranus-Umbriel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/djangfile/neptune/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/djangfile/neptune/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/djangfile/neptune/neptune/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/djangfile/neptune/neptune/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/djangfile/neptune/neptune/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/djangfile/neptune/neptune/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/djangfile/neptune/polls/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/djangfile/neptune/polls/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/djangfile/neptune/polls/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/djangfile/neptune/polls/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/djangfile/neptune/polls/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/djangfile/neptune/polls/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/djangfile/neptune/polls/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/djangfile/neptune/polls/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Uranus-Oberon.py" beforeDir="false" afterPath="$PROJECT_DIR$/Uranus-Oberon.py" afterDir="false" />
     </list>
     <ignored path="venv/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -63,14 +47,59 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Uranus-Oberon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="30" column="23" lean-forward="true" selection-start-line="30" selection-start-column="23" selection-end-line="30" selection-end-column="23" />
+            <state relative-caret-position="3945">
+              <caret line="274" selection-start-line="274" selection-end-line="274" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Uranus-Titania.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1079">
+              <caret line="597" column="34" lean-forward="true" selection-start-line="597" selection-start-column="34" selection-end-line="597" selection-end-column="34" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Earth.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret selection-end-line="5" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Moon.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2430">
+              <caret line="163" selection-start-line="163" selection-end-line="163" />
+              <folding>
+                <element signature="e#1832#1841#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MinMun.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1695">
+              <caret line="113" column="27" selection-start-line="113" selection-start-column="27" selection-end-line="113" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -88,7 +117,6 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>[-3</find>
-      <find>compt</find>
       <find>binput</find>
       <find>parser</find>
       <find>calcul</find>
@@ -101,6 +129,18 @@
       <find>re.</find>
       <find>mkdir</find>
       <find>logging</find>
+      <find>compt</find>
+      <find>addstr</find>
+      <find>copyfile</find>
+      <find>-3</find>
+      <find>input</find>
+      <find>write_su</find>
+      <find>remove_c</find>
+      <find>superN</find>
+      <find>superNone.log</find>
+      <find>process sta</find>
+      <find>print</find>
+      <find>curse</find>
     </findStrings>
     <replaceStrings>
       <replace>parallel</replace>
@@ -156,17 +196,20 @@
         <option value="$PROJECT_DIR$/djangfile/neptune/books/templates/books/book.html" />
         <option value="$PROJECT_DIR$/djangfile/neptune/books/templates/books/author.html" />
         <option value="$PROJECT_DIR$/Uranus-Umbriel.py" />
-        <option value="$PROJECT_DIR$/Moon.py" />
         <option value="$PROJECT_DIR$/MinMun.py" />
+        <option value="$PROJECT_DIR$/Stella.py" />
+        <option value="$PROJECT_DIR$/StellaA.py" />
         <option value="$PROJECT_DIR$/Uranus-Oberon.py" />
+        <option value="$PROJECT_DIR$/Moon.py" />
+        <option value="$PROJECT_DIR$/Uranus-Titania.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="725" />
+    <option name="x" value="601" />
     <option name="y" value="-4" />
-    <option name="width" value="641" />
-    <option name="height" value="772" />
+    <option name="width" value="639" />
+    <option name="height" value="771" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -229,29 +272,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.MinMun">
-    <configuration name="Mars" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="StagePro" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Mars.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.Moon">
     <configuration name="MinMun" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="StagePro" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -318,6 +339,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Stella" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="StagePro" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Stella.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Venus" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="StagePro" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -342,11 +385,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.MinMun" />
         <item itemvalue="Python.Moon" />
+        <item itemvalue="Python.Stella" />
+        <item itemvalue="Python.MinMun" />
         <item itemvalue="Python.Neptune" />
         <item itemvalue="Python.Venus" />
-        <item itemvalue="Python.Mars" />
       </list>
     </recent_temporary>
   </component>
@@ -384,7 +427,10 @@
       <workItem from="1559718968320" duration="8204000" />
       <workItem from="1559731381674" duration="130000" />
       <workItem from="1559731738972" duration="605000" />
-      <workItem from="1559733586306" duration="699000" />
+      <workItem from="1559733586306" duration="8480000" />
+      <workItem from="1559748297724" duration="1780000" />
+      <workItem from="1559805173506" duration="9252000" />
+      <workItem from="1559818876375" duration="2903000" />
     </task>
     <task id="LOCAL-00001" summary="upd">
       <created>1559037018810</created>
@@ -582,28 +628,35 @@
       <option name="project" value="LOCAL" />
       <updated>1559574748068</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="DjangBook + Panama in Uranus-Oberon">
+      <created>1559734408833</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1559734408833</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="128585000" />
+    <option name="totallyTimeSpent" value="150301000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
+    <frame x="64" y="-4" width="1857" height="1085" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.20729685" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.14206745" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" order="0" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="1" visible="true" weight="0.18042813" />
+      <window_info anchor="bottom" id="Terminal" order="1" weight="0.17227319" />
       <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="3" weight="0.32925585" />
       <window_info anchor="bottom" id="Python Console" order="4" weight="0.32925585" />
       <window_info anchor="bottom" id="Docker" order="5" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="6" />
       <window_info anchor="bottom" id="Find" order="7" />
-      <window_info anchor="bottom" id="Run" order="8" weight="0.2517839" />
+      <window_info anchor="bottom" id="Run" order="8" weight="0.17737003" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.39959225" />
       <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
@@ -640,13 +693,15 @@
     <MESSAGE value="curses + format" />
     <MESSAGE value="exited states" />
     <MESSAGE value="DjangStart" />
-    <option name="LAST_COMMIT_MESSAGE" value="DjangStart" />
+    <MESSAGE value="DjangBook + Panama in Uranus-Oberon" />
+    <option name="LAST_COMMIT_MESSAGE" value="DjangBook + Panama in Uranus-Oberon" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/StagePro$Moon.coverage" NAME="Moon Coverage Results" MODIFIED="1559667112660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/StagePro$Moon.coverage" NAME="Moon Coverage Results" MODIFIED="1559806888927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Neptune.coverage" NAME="Neptune Coverage Results" MODIFIED="1559574658005" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Jupiter.coverage" NAME="Jupiter Coverage Results" MODIFIED="1558970171380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Venus.coverage" NAME="Venus Coverage Results" MODIFIED="1559139188214" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/StagePro$Stella.coverage" NAME="Stella Coverage Results" MODIFIED="1559747633513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Earth.coverage" NAME="Earth Coverage Results" MODIFIED="1558962275845" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Saturn_b.coverage" NAME="Saturn_b Coverage Results" MODIFIED="1559025588006" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Mercury.coverage" NAME="Mercury Coverage Results" MODIFIED="1559055467826" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -761,16 +816,6 @@
           <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
           <folding>
             <element signature="e#64#81#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Earth.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-121">
-          <caret selection-end-line="5" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -975,6 +1020,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/exited.file">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="26" column="10" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StellaA.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="48" lean-forward="true" selection-start-line="3" selection-start-column="48" selection-end-line="3" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Stella.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+          <folding>
+            <element signature="e#96#109#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Uranus-Umbriel.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3060">
@@ -985,34 +1054,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exited.file">
+    <entry file="file://$PROJECT_DIR$/Uranus-Oberon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="10" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
+        <state relative-caret-position="3945">
+          <caret line="274" selection-start-line="274" selection-end-line="274" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MinMun.py">
+    <entry file="file://$PROJECT_DIR$/Earth.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="722">
-          <caret line="113" column="27" selection-start-line="113" selection-start-column="27" selection-end-line="113" selection-end-column="27" />
+        <state>
+          <caret selection-end-line="5" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Moon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="722">
-          <caret line="130" selection-start-line="130" selection-end-line="161" selection-end-column="27" />
+        <state relative-caret-position="2430">
+          <caret line="163" selection-start-line="163" selection-end-line="163" />
           <folding>
             <element signature="e#1832#1841#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Uranus-Oberon.py">
+    <entry file="file://$PROJECT_DIR$/MinMun.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="23" lean-forward="true" selection-start-line="30" selection-start-column="23" selection-end-line="30" selection-end-column="23" />
+        <state relative-caret-position="1695">
+          <caret line="113" column="27" selection-start-line="113" selection-start-column="27" selection-end-line="113" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Uranus-Titania.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1079">
+          <caret line="597" column="34" lean-forward="true" selection-start-line="597" selection-start-column="34" selection-end-line="597" selection-end-column="34" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

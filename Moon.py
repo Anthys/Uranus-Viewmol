@@ -128,6 +128,7 @@ giveexener("escf.log")
 print(b"HJANd\n a")
 print("HJANd\n a".encode())
 """
+"""
 def panama_(paper):
     subprocess.run(["mkdir", "panama_files"])
     rep = 1
@@ -162,3 +163,23 @@ def panama_(paper):
     print('ALL FILES DONE')
 
 panama_("escf.log")
+"""
+a = ["&", "a", "f"]
+print("".join(a))
+
+import argparse
+
+parser = argparse.ArgumentParser(description='SaturnCommand')
+parser.add_argument("file", help='file or directory name (format xyz to be processed)', type=str)
+parser.add_argument("-s", "--shrink", action='store_true', help="remove input spacing")
+parser.add_argument("-c", "--complete", action="store_true", help="customize process")
+parser.add_argument("-t", "--turbo", action="store_true", help="use turbo files")
+parser.add_argument('-create', "--creation_only", action="store_true",
+                    help="only creates turbomole files, doesn't qsub them")
+parser.add_argument("-panama", "--panama", action="store_true",
+                    help="DO NOT CALL DIRECTLY, is used for panama calculations")
+parser.add_argument("-force", "--forcing", action="store_true", help="DO NOT CALL, force operations to be processed")
+parser.add_argument("-ns", "--nosort", action="store_true", help="do not sort files and put them in folders")
+parser.add_argument("-o", dest="operations", help="DO NOT CALL, decides which operations to use")
+args = parser.parse_args()
+if args.operations: print(args.operations)
