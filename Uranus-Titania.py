@@ -119,6 +119,9 @@ def get_input():
                     elif i in ["X"]:
                         if not useturbo and not set(["o", "x"]).issubset(operations[:indx]):
                             operations = "ox" + operations[:]
+                        if operations[indx+1:]:
+                            operations = operations.replace("X", "")
+                            operations += "X"
                     elif i in ["F"]:
                         if not useturbo and "f" not in operations[:indx]:
                             operations = operations[:indx] + "f" + operations[indx:]
@@ -131,7 +134,6 @@ def get_input():
                     print("New chain of operation: " + operations)
     
     operations = list(OrderedDict.fromkeys([i for i in operations]))
-    logging.info('Operations chosen: ' + str(operations))
 
     return operations, name, useturbo
 
@@ -152,6 +154,11 @@ def create_turbo_files(xyz, name, label = ""):
     os.chdir(rwork)
     copyfile(rroot + "/" + xyz, rwork + "/" + xyz)
     subprocess.run(["tp", "-g", xyz])
+    try:
+        pass
+        #subprocess.run("define", input=b'\ny\ndesy 1\n*\nno\n\n*\n\n*\n') #GET BETTER SYMMETRY
+    except Exception as e:
+        subprocess.run(["tp", "-g", xyz])
     logging.info("Turbo file created for " + xyz)
     os.chdir(rroot)
     return rwork
@@ -166,12 +173,14 @@ def main():
 
     operations, name, useturbo = get_input()
 
+    logging.info('Operations chosen: ' + str(operations))
+
     if args.away: #FOR THE MOMENT DOESNT CONSIDER FOLDER OF FILES
         operations = "".join(operations)
         os.system("gtm")
         make_command(startcmd="scl enable rh-python36 'python3 " + progname + ".py -o " + operations + " -n " + name + " -nosub " + args.file + " > superNone.log'", endcmd="rsync -rva" + " --exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' ${TMPDIR}/ ${SGE_O_WORKDIR}/")
         os.system("qsub -N " + name + "_global" + " submit.job")
-        logging.info("Process all sent to cluster.")
+        logging.info("Files all sent to cluster.")
         sys.exit(0)
 
     for i in operations:
@@ -362,6 +371,12 @@ def write_sym():
 
 def sort_a_file(start_file, end_dir, name=""):
     main_path = "/home/barres/xDatabase"
+    main_path_list = [i for i in main_path.split("/")]
+    main_path_list = []
+    for i in range(len(main_path_list)):
+        tdir = "/" + "/".join(main_path_list)
+        if not os.path.isdir(tdir):
+            subprocess.run(["mkdir", tdir])
     if not os.path.isdir(main_path):
         subprocess.run(["mkdir", main_path])
     if not os.path.isdir(main_path + "/" + args.file[:-4]):
@@ -387,8 +402,15 @@ def cleaner(path):
             sort_a_file(i, "exited_orbitals")
         if i == "panama_files":
             sort_a_file(i, "exited_orbitals")
-        if i[-3:] == ".cub":
+        if i[-4:] == ".cub":
             sort_a_file(i, "top_orbitals")
+        if i[-4:] == ".xyz":
+            sort_a_file(i, "geometry")
+        if i == "data.plot":
+            sort_a_file(i, "spectra")
+
+    #PROBLEMS
+    sort_a_file("coord.xyz", "geometry")
     os.chdir("../")
 
 def checkloop():
@@ -563,6 +585,7 @@ def panama_(paper):
                       os.rename("td.plt", "./panama_files/"  + mtc + "_orb_" + str(cmpt) + ".plt")
                       break
     fobj.close()
+    subprocess.run("panama", input=b"1\nescf.log\n\n\n\n0.3\n\n")
     if not wrking: print('ALL FILES DONE')
 
 
@@ -595,7 +618,7 @@ def initargs():
 
     if args.turbo: turbocheck = True
     if args.nosub: wrking = True
-    if args.novisual: visu = False
+    if args.novisu: visu = False
 
 
 def initcurse():

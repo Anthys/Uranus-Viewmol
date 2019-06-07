@@ -164,8 +164,9 @@ def panama_(paper):
 
 panama_("escf.log")
 """
+"""
 a = ["&", "a", "f"]
-print("".join(a))
+print("/".join(a))
 
 import argparse
 
@@ -183,3 +184,14 @@ parser.add_argument("-ns", "--nosort", action="store_true", help="do not sort fi
 parser.add_argument("-o", dest="operations", help="DO NOT CALL, decides which operations to use")
 args = parser.parse_args()
 if args.operations: print(args.operations)
+"""
+"""
+import os
+p = subprocess.Popen(["ssh", "frontale", "ls"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+result = p.stdout.readlines()
+result = [i.decode() for i in result]
+print("".join(result))
+"""
+
+a = [1, 2, 1, 1,3]
+print(list(filter(lambda x: x != 2, a)))

@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9903dc35-67a4-4c2c-9247-06958f93c531" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Uranus-Titania.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hubble.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Moon.py" beforeDir="false" afterPath="$PROJECT_DIR$/Moon.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Uranus-Oberon.py" beforeDir="false" afterPath="$PROJECT_DIR$/Uranus-Oberon.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Uranus-Titania.py" beforeDir="false" afterPath="$PROJECT_DIR$/Uranus-Titania.py" afterDir="false" />
     </list>
     <ignored path="venv/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,38 +35,71 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Uranus-Umbriel.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3060">
-              <caret line="215" column="22" selection-start-line="215" selection-start-column="22" selection-end-line="215" selection-end-column="22" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Uranus-Oberon.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3945">
-              <caret line="274" selection-start-line="274" selection-end-line="274" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Uranus-Titania.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1079">
-              <caret line="597" column="34" lean-forward="true" selection-start-line="597" selection-start-column="34" selection-end-line="597" selection-end-column="34" />
+            <state relative-caret-position="15">
+              <caret line="379" column="36" lean-forward="true" selection-start-line="379" selection-start-column="36" selection-end-line="379" selection-end-column="36" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="27" lean-forward="true" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#36#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret lean-forward="true" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/detail.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="7" lean-forward="true" selection-start-line="11" selection-start-column="7" selection-end-line="11" selection-end-column="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/results.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="53" lean-forward="true" selection-start-line="8" selection-start-column="53" selection-end-line="8" selection-end-column="53" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hubble.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="26" selection-start-line="26" selection-end-line="26" />
             </state>
           </provider>
         </entry>
@@ -86,8 +119,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Moon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2430">
-              <caret line="163" selection-start-line="163" selection-end-line="163" />
+            <state relative-caret-position="680">
+              <caret line="196" column="39" selection-start-line="196" selection-start-column="6" selection-end-line="196" selection-end-column="39" />
               <folding>
                 <element signature="e#1832#1841#0" expanded="true" />
               </folding>
@@ -141,6 +174,8 @@
       <find>process sta</find>
       <find>print</find>
       <find>curse</find>
+      <find>clean</find>
+      <find>launch</find>
     </findStrings>
     <replaceStrings>
       <replace>parallel</replace>
@@ -200,16 +235,17 @@
         <option value="$PROJECT_DIR$/Stella.py" />
         <option value="$PROJECT_DIR$/StellaA.py" />
         <option value="$PROJECT_DIR$/Uranus-Oberon.py" />
+        <option value="$PROJECT_DIR$/hubble.py" />
         <option value="$PROJECT_DIR$/Moon.py" />
         <option value="$PROJECT_DIR$/Uranus-Titania.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="601" />
-    <option name="y" value="-4" />
-    <option name="width" value="639" />
-    <option name="height" value="771" />
+    <option name="x" value="628" />
+    <option name="y" value="132" />
+    <option name="width" value="637" />
+    <option name="height" value="717" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -217,12 +253,48 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="StagePro" type="b2602c69:ProjectViewProjectNode" />
               <item name="StagePro" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="StagePro" type="b2602c69:ProjectViewProjectNode" />
+              <item name="StagePro" type="462c0819:PsiDirectoryNode" />
+              <item name="djangfile" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="StagePro" type="b2602c69:ProjectViewProjectNode" />
+              <item name="StagePro" type="462c0819:PsiDirectoryNode" />
+              <item name="djangfile" type="462c0819:PsiDirectoryNode" />
+              <item name="neptune" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="StagePro" type="b2602c69:ProjectViewProjectNode" />
+              <item name="StagePro" type="462c0819:PsiDirectoryNode" />
+              <item name="djangfile" type="462c0819:PsiDirectoryNode" />
+              <item name="neptune" type="462c0819:PsiDirectoryNode" />
+              <item name="polls" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="StagePro" type="b2602c69:ProjectViewProjectNode" />
+              <item name="StagePro" type="462c0819:PsiDirectoryNode" />
+              <item name="djangfile" type="462c0819:PsiDirectoryNode" />
+              <item name="neptune" type="462c0819:PsiDirectoryNode" />
+              <item name="polls" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="StagePro" type="b2602c69:ProjectViewProjectNode" />
+              <item name="StagePro" type="462c0819:PsiDirectoryNode" />
+              <item name="djangfile" type="462c0819:PsiDirectoryNode" />
+              <item name="neptune" type="462c0819:PsiDirectoryNode" />
+              <item name="polls" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="polls" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="StagePro" type="b2602c69:ProjectViewProjectNode" />
@@ -237,7 +309,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -245,7 +316,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python&#10;CassandraQL" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pycalcview" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -430,7 +501,12 @@
       <workItem from="1559733586306" duration="8480000" />
       <workItem from="1559748297724" duration="1780000" />
       <workItem from="1559805173506" duration="9252000" />
-      <workItem from="1559818876375" duration="2903000" />
+      <workItem from="1559818876375" duration="8787000" />
+      <workItem from="1559833488877" duration="38000" />
+      <workItem from="1559837856751" duration="1611000" />
+      <workItem from="1559891292210" duration="253000" />
+      <workItem from="1559894105035" duration="187000" />
+      <workItem from="1559908105043" duration="5080000" />
     </task>
     <task id="LOCAL-00001" summary="upd">
       <created>1559037018810</created>
@@ -635,28 +711,35 @@
       <option name="project" value="LOCAL" />
       <updated>1559734408833</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Overall">
+      <created>1559821829797</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1559821829797</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="150301000" />
+    <option name="totallyTimeSpent" value="163354000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-4" width="1857" height="1085" extended-state="6" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.14206745" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.1509121" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" order="0" />
-      <window_info anchor="bottom" id="Terminal" order="1" weight="0.17227319" />
+      <window_info anchor="bottom" id="Terminal" order="1" weight="0.21100917" />
       <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="3" weight="0.32925585" />
       <window_info anchor="bottom" id="Python Console" order="4" weight="0.32925585" />
       <window_info anchor="bottom" id="Docker" order="5" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="6" />
       <window_info anchor="bottom" id="Find" order="7" />
-      <window_info anchor="bottom" id="Run" order="8" weight="0.17737003" />
+      <window_info active="true" anchor="bottom" id="Run" order="8" visible="true" weight="0.17737003" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.39959225" />
       <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
@@ -694,10 +777,11 @@
     <MESSAGE value="exited states" />
     <MESSAGE value="DjangStart" />
     <MESSAGE value="DjangBook + Panama in Uranus-Oberon" />
-    <option name="LAST_COMMIT_MESSAGE" value="DjangBook + Panama in Uranus-Oberon" />
+    <MESSAGE value="Overall" />
+    <option name="LAST_COMMIT_MESSAGE" value="Overall" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/StagePro$Moon.coverage" NAME="Moon Coverage Results" MODIFIED="1559806888927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/StagePro$Moon.coverage" NAME="Moon Coverage Results" MODIFIED="1559920137958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Neptune.coverage" NAME="Neptune Coverage Results" MODIFIED="1559574658005" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Jupiter.coverage" NAME="Jupiter Coverage Results" MODIFIED="1558970171380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/StagePro$Venus.coverage" NAME="Venus Coverage Results" MODIFIED="1559139188214" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -844,29 +928,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/results.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="62" selection-start-line="8" selection-start-column="62" selection-end-line="8" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/detail.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="7" selection-start-line="11" selection-start-column="7" selection-end-line="11" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/djangfile/neptune/manage.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/static/polls/style.css">
       <provider selected="true" editor-type-id="text-editor">
@@ -902,13 +965,6 @@
     <entry file="file://$PROJECT_DIR$/djangfile/neptune/books/apps.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/djangfile/neptune/neptune/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -925,16 +981,6 @@
           <caret line="16" column="48" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="48" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="11" column="27" lean-forward="true" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#36#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1074,16 +1120,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Moon.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2430">
-          <caret line="163" selection-start-line="163" selection-end-line="163" />
-          <folding>
-            <element signature="e#1832#1841#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/MinMun.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1695">
@@ -1091,10 +1127,65 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/results.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="53" lean-forward="true" selection-start-line="8" selection-start-column="53" selection-end-line="8" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/templates/polls/detail.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="7" lean-forward="true" selection-start-line="11" selection-start-column="7" selection-end-line="11" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/djangfile/neptune/polls/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="27" lean-forward="true" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Moon.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="680">
+          <caret line="196" column="39" selection-start-line="196" selection-start-column="6" selection-end-line="196" selection-end-column="39" />
+          <folding>
+            <element signature="e#1832#1841#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hubble.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Uranus-Titania.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1079">
-          <caret line="597" column="34" lean-forward="true" selection-start-line="597" selection-start-column="34" selection-end-line="597" selection-end-column="34" />
+        <state relative-caret-position="15">
+          <caret line="379" column="36" lean-forward="true" selection-start-line="379" selection-start-column="36" selection-end-line="379" selection-end-column="36" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
