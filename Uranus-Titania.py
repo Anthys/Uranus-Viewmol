@@ -303,8 +303,9 @@ def launch_job(path, operation):
         logging.info("Creating file molden.input in " + path)
         if "molden.input" in os.listdir():
             os.remove("molden.input")
-        subprocess.run("tm2molden", input="\nn\n\nn\n".encode()) #NE MARCHE PAS
-        subprocess.run("tm2molden", input="geom.in\ny\nn\nn\n".encode())
+        subprocess.run("tm2molden", input="\nn\n\nn\n".encode()) #Seems to work
+        subprocess.run("tm2molden", input="mos.in\ny\nn\nn\n".encode())
+        cut_mos_in()
 
     elif operation == "$":
         os.system("touch test.tset")
@@ -398,19 +399,22 @@ def sort_a_file(start_file, end_dir = "", name=""):
 
 def cleaner(path):
     os.chdir(path)
-    thedict = {"aoforce.log":"aoforce.log", "molden.input":"freq.in", "geom.in":"mos.in"}
+    thedict = {"aoforce.log":"aoforce.log", "molden.input":"freq.in", "mos.in":"mos.in", "mos_cut.in": "mos_cut.in"}
     for i in os.listdir():
         print(i)
-        if i in ["aoforce.log","molden.input", "mos.in", "geom.in"]:
+        if i in ["aoforce.log","molden.input", "mos.in", "geom.in", "mos_cut.in"]:
             sort_a_file(i, name=thedict[i])
         if i == "escf.log":
             sort_a_file(i, "exited_orbitals")
         if i == "panama_files":
-            sort_a_file(i, "exited_orbitals")
+            sort_a_file(i)
         if i[-4:] == ".cub":
-            sort_a_file(i, "top_orbitals")
+            sort_a_file(i, name=i+"e")
         if i[-4:] == ".xyz":
-            sort_a_file(i, "geometry")
+            if i == "coord.xyz":
+                sort_a_file(i, name="geom.xyz")
+            else:
+                sort_a_file(i, "geometry")
         if i[-5:] == ".plot":
             sort_a_file(i, "spectra")
     os.chdir("../")
@@ -628,6 +632,52 @@ def panama_(paper):
     ffile.write(str(x) + "\n" + str(y))
     ffile.close()
     if not wrking: print('ALL FILES DONE')
+
+def cut_mos_in():
+    plus_or_min = 10
+    ffile = open("mos.in")
+    numb_line_middle = 0
+    compt_line = 0
+    the_lines = ["", ""]
+    the_number = 0
+    output = ""
+    for line in ffile:
+        mtc = re.search("[ ]*Sym=", line)
+        if mtc:
+            compt_line += 1
+        if compt_line < 1:
+            output += line
+        elif compt_line >1:
+                mtc2 = re.search("[ ]*(\d*)[ ]", the_lines[0])
+                if mtc2:
+                    the_number = int(mtc2.group(1))+5
+                break
+        the_lines.append(line)
+        the_lines.pop(0)
+    compt_line=0
+    ffile.close()
+    ffile = open("mos.in")
+    for line in ffile:
+        numb_line_middle+=1
+        mtc = re.search("Ene=[ ]*((-)?(\d)?\.\d+(E[+-]\d*)?)", line)
+        if mtc:
+            numb = mtc.group(1)
+            numb =float(numb)
+            if numb>0:
+                numb_line_middle-=1
+                break
+    ffile.close()
+    ffile = open("mos.in")
+    for line in ffile:
+        compt_line += 1
+        if compt_line >= numb_line_middle - (plus_or_min*the_number) and compt_line < numb_line_middle + plus_or_min*the_number:
+            output += line
+        elif compt_line >= numb_line_middle + plus_or_min*the_number:
+            break
+    ffile.close()
+    ffile = open("mos_cut.in", "w+")
+    ffile.write(output)
+    ffile.close()
 
 
 def initlog():
