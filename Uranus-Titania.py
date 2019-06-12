@@ -304,6 +304,7 @@ def launch_job(path, operation):
         if "molden.input" in os.listdir():
             os.remove("molden.input")
         subprocess.run("tm2molden", input="\nn\n\nn\n".encode()) #NE MARCHE PAS
+        subprocess.run("tm2molden", input="geom.in\ny\nn\nn\n".encode())
 
     elif operation == "$":
         os.system("touch test.tset")
@@ -369,7 +370,7 @@ def write_sym():
     a.write(b)
     a.close()
 
-def sort_a_file(start_file, end_dir, name=""):
+def sort_a_file(start_file, end_dir = "", name=""):
     main_path = "/home/barres/xDatabase"
     main_path_list = [i for i in main_path.split("/")]
     main_path_list = []
@@ -381,27 +382,27 @@ def sort_a_file(start_file, end_dir, name=""):
         subprocess.run(["mkdir", main_path])
     if not os.path.isdir(main_path + "/" + args.file[:-4]):
         subprocess.run(["mkdir", main_path + "/" +  args.file[:-4]])
-    if not os.path.isdir(main_path + "/" + args.file[:-4] + "/" + end_dir):
+    if end_dir and not os.path.isdir(main_path + "/" + args.file[:-4] + "/" + end_dir):
         subprocess.run(["mkdir", main_path + "/" + args.file[:-4] + "/" + end_dir])
     #os.rename(start_file, main_path + "/" + end_dir + "/" + name)
     print("---")
     print(start_file)
-    print(main_path + "/" + args.file[:-4] + "/" + end_dir + "/" + name)
+    print(main_path + "/" + args.file[:-4] + "/" + (end_dir + "/" if end_dir else "") + name)
     if start_file == "panama_files":
-        os.system("cp -r panama_files " + main_path + "/" + args.file[:-4] + "/" + end_dir + "/")
+        os.system("cp -r panama_files " + main_path + "/" + args.file[:-4] + "/" + (end_dir + "/" if end_dir else ""))
         return
-    if not (name if name else start_file) in os.listdir(main_path + "/" + args.file[:-4] + "/" + end_dir + "/"):
-        copyfile(start_file, main_path + "/" + args.file[:-4] + "/" + end_dir + "/" + (name if name else start_file))
+    if args.forcing or not (name if name else start_file) in os.listdir(main_path + "/" + args.file[:-4] + "/" + (end_dir + "/" if end_dir else "")):
+        copyfile(start_file, main_path + "/" + args.file[:-4] + "/" + (end_dir + "/" if end_dir else "") + (name if name else start_file))
     else:
         print('File exists')
 
 def cleaner(path):
     os.chdir(path)
-
+    thedict = {"aoforce.log":"aoforce.log", "molden.input":"freq.in", "geom.in":"mos.in"}
     for i in os.listdir():
         print(i)
-        if i in ["aoforce.log","molden.input"]:
-            sort_a_file(i, "frequency_force_logs")
+        if i in ["aoforce.log","molden.input", "mos.in", "geom.in"]:
+            sort_a_file(i, name=thedict[i])
         if i == "escf.log":
             sort_a_file(i, "exited_orbitals")
         if i == "panama_files":
@@ -557,6 +558,19 @@ def check_end():
     return sm
 
 def panama_(paper):
+    def panama_to_cub():
+        ffile = open("control")
+        rfile = ffile.read()
+        ffile.close()
+        mtc = re.search("\$pointval.*\n", rfile)
+        if mtc:
+            rfile = rfile.replace(mtc.group(), "$pointval fmt=cub\n")
+            ffile = open("control", "w")
+            ffile.write(rfile)
+            ffile.close()
+        else:
+            logging.info("Error in panama_to_cub")
+
     subprocess.run(["mkdir", "panama_files"])
     rep = 1
     paper = "escf.log"
@@ -582,8 +596,9 @@ def panama_(paper):
                       maxenerg = energ + 0.0001
                       tempstr = "2\nescf.log\n1\n" + str(minenerg) + "\n" + str(maxenerg) + "\n"
                       subprocess.run("panama", input=tempstr.encode())
+                      panama_to_cub()
                       subprocess.run(["dscf", "-proper"])
-                      os.rename("td.plt", "./panama_files/"  + mtc + "_orb_" + str(cmpt) + ".plt")
+                      os.rename("td.cub", "./panama_files/"  + mtc + "_orb_" + str(cmpt) + ".cub")
                       break
     fobj.close()
     subprocess.run("panama", input=b"1\nescf.log\n\n\n\n0.3\n\n")
