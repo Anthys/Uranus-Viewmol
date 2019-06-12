@@ -389,7 +389,11 @@ def sort_a_file(start_file, end_dir, name=""):
     print(main_path + "/" + args.file[:-4] + "/" + end_dir + "/" + name)
     if start_file == "panama_files":
         os.system("cp -r panama_files " + main_path + "/" + args.file[:-4] + "/" + end_dir + "/")
-    copyfile(start_file, main_path + "/" + args.file[:-4] + "/" + end_dir + "/" + (name if name else start_file))
+        return
+    if not (name if name else start_file) in os.listdir(main_path + "/" + args.file[:-4] + "/" + end_dir + "/"):
+        copyfile(start_file, main_path + "/" + args.file[:-4] + "/" + end_dir + "/" + (name if name else start_file))
+    else:
+        print('File exists')
 
 def cleaner(path):
     os.chdir(path)
@@ -406,11 +410,8 @@ def cleaner(path):
             sort_a_file(i, "top_orbitals")
         if i[-4:] == ".xyz":
             sort_a_file(i, "geometry")
-        if i == "data.plot":
+        if i[-5:] == ".plot":
             sort_a_file(i, "spectra")
-
-    #PROBLEMS
-    sort_a_file("coord.xyz", "geometry")
     os.chdir("../")
 
 def checkloop():
@@ -586,6 +587,31 @@ def panama_(paper):
                       break
     fobj.close()
     subprocess.run("panama", input=b"1\nescf.log\n\n\n\n0.3\n\n")
+    ffile = open("data.plot")
+    A = 10 ** 9
+    H = 6.6260693 * (10 ** (-34))
+    C = 299792458
+    E = 1.60217653 * (10 ** (-19))
+
+    def make_x_y():
+        x = []
+        y = []
+        for line in ffile:
+            line = line.replace("\n", "")
+            line = line.split()
+            x += [float(line[0])]
+            y += [float(line[1])]
+        return x, y
+    x, y = make_x_y()
+    for i in range(len(x)):
+        x[i] = A * H * C / (E * x[i])
+        x[i] = round(x[i], 1)
+    x.reverse()
+    y.reverse()
+    ffile.close()
+    ffile = open("absorption.plot", "w+")
+    ffile.write(str(x) + "\n" + str(y))
+    ffile.close()
     if not wrking: print('ALL FILES DONE')
 
 
