@@ -14,8 +14,11 @@ import curses
 
 ## CONSTANTS
 progname = "Uranus-Titania"
+loc_mypanama = "/home/barres/mypanama"
+dir_spyctrum = "/home/barres/spyctrum/spyctrum/spyctrum.py"
 user_input = True
 shrink = False
+panaplot = True
 turbocheck = False
 spr = "---\n"*5
 DEFAULT = "oOfFxX"
@@ -71,6 +74,8 @@ def get_input():
         return operations, ("all_files" if not args.name else args.name), False
 
     name = ""
+    if args.name:
+        name = args.name
     useturbo = 0
     operations = DEFAULT
 
@@ -399,10 +404,11 @@ def sort_a_file(start_file, end_dir = "", name=""):
 
 def cleaner(path):
     os.chdir(path)
-    thedict = {"aoforce.log":"aoforce.log", "molden.input":"freq.in", "mos.in":"mos.in", "mos_cut.in": "mos_cut.in"}
+    if "escf.log" in os.listdir(): os.system("python "+ dir_spyctrum + " -t escf.log -m convolution -l 1 1000") #Sale
+    thedict = {"aoforce.log":"aoforce.log", "molden.input":"freq.in", "mos.in":"mos.in", "mos_cut.in": "mos_cut.in", "exscpectrum":"exspectrum"}
     for i in os.listdir():
         print(i)
-        if i in ["aoforce.log","molden.input", "mos.in", "geom.in", "mos_cut.in"]:
+        if i in ["aoforce.log","molden.input", "mos.in", "geom.in", "mos_cut.in", "exspectrum"]:
             sort_a_file(i, name=thedict[i])
         if i == "escf.log":
             sort_a_file(i, "exited_orbitals")
@@ -416,7 +422,12 @@ def cleaner(path):
             else:
                 sort_a_file(i, "geometry")
         if i[-5:] == ".plot":
-            sort_a_file(i, "spectra")
+            if i == "absorption.plot":
+                sort_a_file(i)
+            else:
+                sort_a_file(i, "spectra")
+        if i[-4:] == ".csv":
+            sort_a_file(i)
     os.chdir("../")
 
 def checkloop():
@@ -599,38 +610,43 @@ def panama_(paper):
                       minenerg = energ - 0.0001
                       maxenerg = energ + 0.0001
                       tempstr = "2\nescf.log\n1\n" + str(minenerg) + "\n" + str(maxenerg) + "\n"
-                      subprocess.run("panama", input=tempstr.encode())
+                      subprocess.run(loc_mypanama, input=tempstr.encode())
                       panama_to_cub()
                       subprocess.run(["dscf", "-proper"])
                       os.rename("td.cub", "./panama_files/"  + mtc + "_orb_" + str(cmpt) + ".cub")
                       break
     fobj.close()
-    subprocess.run("panama", input=b"1\nescf.log\n\n\n\n0.3\n\n")
-    ffile = open("data.plot")
-    A = 10 ** 9
-    H = 6.6260693 * (10 ** (-34))
-    C = 299792458
-    E = 1.60217653 * (10 ** (-19))
+    if panaplot:
+        subprocess.run("panama", input=b"1\nescf.log\n\n\n\n0.3\n\n")
+        ffile = open("data.plot")
+        A = 10 ** 9
+        H = 6.6260693 * (10 ** (-34))
+        C = 299792458
+        E = 1.60217653 * (10 ** (-19))
 
-    def make_x_y():
-        x = []
-        y = []
-        for line in ffile:
-            line = line.replace("\n", "")
-            line = line.split()
-            x += [float(line[0])]
-            y += [float(line[1])]
-        return x, y
-    x, y = make_x_y()
-    for i in range(len(x)):
-        x[i] = A * H * C / (E * x[i])
-        x[i] = round(x[i], 1)
-    x.reverse()
-    y.reverse()
-    ffile.close()
-    ffile = open("absorption.plot", "w+")
-    ffile.write(str(x) + "\n" + str(y))
-    ffile.close()
+        def make_x_y():
+            x = []
+            y = []
+            for line in ffile:
+                line = line.replace("\n", "")
+                line = line.split()
+                x += [float(line[0])]
+                y += [float(line[1])]
+            return x, y
+        x, y = make_x_y()
+        for i in range(len(x)):
+            x[i] = A * H * C / (E * x[i])
+            x[i] = round(x[i], 1)
+        x.reverse()
+        y.reverse()
+        ffile.close()
+        ffile = open("absorption.plot", "w+")
+        ffile.write(str(x) + "\n" + str(y))
+        ffile.close()
+    else:
+        #os.system("python " + dir_spyctrum + " -t escf.log -m convolution -l 1 1000") JE SUIS QUASI SUR QUE CA FONCTIONNERA PAS, LA SOLUTION SALE EST AU DEBUT DE CLEANER
+        pass
+
     if not wrking: print('ALL FILES DONE')
 
 def cut_mos_in():
@@ -659,12 +675,12 @@ def cut_mos_in():
     ffile = open("mos.in")
     for line in ffile:
         numb_line_middle+=1
-        mtc = re.search("Ene=[ ]*((-)?(\d)?\.\d+(E[+-]\d*)?)", line)
+        mtc = re.search("Occup=[ ]*((-)?(\d)?\.\d+(E[+-]\d*)?)", line)
         if mtc:
             numb = mtc.group(1)
             numb =float(numb)
-            if numb>0:
-                numb_line_middle-=1
+            if numb == 0.0:
+                numb_line_middle-=3
                 break
     ffile.close()
     ffile = open("mos.in")
@@ -701,7 +717,7 @@ def initargs():
     parser.add_argument("-ns", "--nosort", action="store_true", help="do not sort files and put them in folders")
     parser.add_argument("-o", dest="operations", help="DO NOT CALL, decides which operations to use")
     parser.add_argument("-away", "--away", action="store_true", help="All the operations will be called in the cluster. No feedback can be given, but the process can continue without interuption.")
-    parser.add_argument("-n", dest="name", help="Give a name for remote operations, usually, do not call.")
+    parser.add_argument("-n", dest="name", help="Give a name for remote operations. Usually, do not call.")
     parser.add_argument("-clean", '--clean', help="Just clean files", action="store_true")
     parser.add_argument("-nosub", '--nosub', help="make all calculations on the computer where the program is launched", action="store_true")
     parser.add_argument("-novisu", '--novisu', help="no visual", action="store_true")

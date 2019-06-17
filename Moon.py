@@ -192,6 +192,8 @@ result = p.stdout.readlines()
 result = [i.decode() for i in result]
 print("".join(result))
 """
-
+"""
 a = [1, 2, 1, 1,3]
 print(list(filter(lambda x: x != 2, a)))
+"""
+print([i for i in range(3)])
