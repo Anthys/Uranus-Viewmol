@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9903dc35-67a4-4c2c-9247-06958f93c531" name="Default Changelist" comment="yy">
+    <list default="true" id="9903dc35-67a4-4c2c-9247-06958f93c531" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Uranus-Titania.py" beforeDir="false" afterPath="$PROJECT_DIR$/Uranus-Titania.py" afterDir="false" />
     </list>
     <ignored path="venv/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,8 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Uranus-Titania.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="253" column="22" lean-forward="true" selection-start-line="253" selection-start-column="22" selection-end-line="253" selection-end-column="22" />
+            <state relative-caret-position="165">
+              <caret line="247" column="17" selection-start-line="247" selection-start-column="17" selection-end-line="247" selection-end-column="17" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -59,7 +60,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/to_dtb.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
+            <state relative-caret-position="399">
               <caret line="36" selection-start-line="36" selection-end-line="36" />
             </state>
           </provider>
@@ -68,8 +69,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/retrieve.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="30" column="32" selection-start-line="30" selection-start-column="32" selection-end-line="30" selection-end-column="32" />
+            <state relative-caret-position="255">
+              <caret line="17" column="23" lean-forward="true" selection-start-line="17" selection-start-column="23" selection-end-line="17" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -86,7 +87,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>temp</find>
       <find>checkloop</find>
       <find>get_result</find>
       <find>dirlist</find>
@@ -116,6 +116,7 @@
       <find>panama</find>
       <find>cp</find>
       <find>copy</find>
+      <find>for i</find>
     </findStrings>
     <replaceStrings>
       <replace>parallel</replace>
@@ -176,9 +177,9 @@
         <option value="$PROJECT_DIR$/StellaA.py" />
         <option value="$PROJECT_DIR$/Uranus-Oberon.py" />
         <option value="$PROJECT_DIR$/hubble.py" />
-        <option value="$PROJECT_DIR$/retrieve.py" />
         <option value="$PROJECT_DIR$/to_dtb.py" />
         <option value="$PROJECT_DIR$/Moon.py" />
+        <option value="$PROJECT_DIR$/retrieve.py" />
         <option value="$PROJECT_DIR$/Uranus-Titania.py" />
       </list>
     </option>
@@ -435,7 +436,7 @@
       <workItem from="1560769507984" duration="266000" />
       <workItem from="1560770022100" duration="5214000" />
       <workItem from="1560841696207" duration="1974000" />
-      <workItem from="1560856279687" duration="666000" />
+      <workItem from="1560856279687" duration="3896000" />
     </task>
     <task id="LOCAL-00001" summary="upd">
       <created>1559037018810</created>
@@ -682,11 +683,18 @@
       <option name="project" value="LOCAL" />
       <updated>1560788158233</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="before changing to have homo.cube and lumo.cube">
+      <created>1560858003343</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1560858003344</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="207614000" />
+    <option name="totallyTimeSpent" value="210844000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-4" width="1857" height="1085" extended-state="6" />
@@ -746,7 +754,8 @@
     <MESSAGE value="nice-maybe / panama-to-cub" />
     <MESSAGE value="with a cut molecular files with only 10 around 0" />
     <MESSAGE value="yy" />
-    <option name="LAST_COMMIT_MESSAGE" value="yy" />
+    <MESSAGE value="before changing to have homo.cube and lumo.cube" />
+    <option name="LAST_COMMIT_MESSAGE" value="before changing to have homo.cube and lumo.cube" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/StagePro$Moon.coverage" NAME="Moon Coverage Results" MODIFIED="1560784721735" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -1128,16 +1137,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Uranus-Titania.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="253" column="22" lean-forward="true" selection-start-line="253" selection-start-column="22" selection-end-line="253" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Moon.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2955">
@@ -1150,15 +1149,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/to_dtb.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
+        <state relative-caret-position="399">
           <caret line="36" selection-start-line="36" selection-end-line="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/retrieve.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="32" selection-start-line="30" selection-start-column="32" selection-end-line="30" selection-end-column="32" />
+        <state relative-caret-position="255">
+          <caret line="17" column="23" lean-forward="true" selection-start-line="17" selection-start-column="23" selection-end-line="17" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Uranus-Titania.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="247" column="17" selection-start-line="247" selection-start-column="17" selection-end-line="247" selection-end-column="17" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

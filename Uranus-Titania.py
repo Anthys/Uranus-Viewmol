@@ -258,20 +258,26 @@ def launch_job(path, operation):
         else:
             logging.info("Error in " + path + " -- No occupied orbitals found in submit.job")
             return
-        o_file = open("control")
-        r_file = o_file.read()
-        o_file.close()
-        r_file = r_file.replace("$end", "$pointval fmt=cub mo " + mx_orbital + "," + str(int(mx_orbital)+1) + "\n$end")
-        o_file = open("control", "w")
-        o_file.write(r_file)
-        o_file.close()
+        for orbicur in [mx_orbital, str(int(mx_orbital)+1)]:
+            pass
+            o_file = open("control")
+            r_file = o_file.read()
+            o_file.close()
+            r_file = r_file.replace("$end", "$pointval fmt=cub mo " + orbicur + "\n$end")
+            o_file = open("control", "w")
+            o_file.write(r_file)
+            o_file.close()
 
-        if wrking:
-            os.system("jobex -c 100")
-        else:
-            make_command(endcmd="rsync -rva" + " --exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' ${TMPDIR}/ ${SGE_O_WORKDIR}/")
-            os.system("qsub -N " + name + "_orbitals" + " submit.job")
-        logging.info("Orbital calculation started in " + path)
+            if wrking:
+                os.system("jobex -c 100")
+                #THIS IS NOT IN THE NON-AWAY VERSION BECAUSE IM LAZY
+                for i in os.listdir():
+                    if i[-4:]==".cub":
+                        os.system("mv " + i + " " + ('homo.cube' if orbicur == mx_orbital else "lumo.cube"))
+            else:
+                make_command(endcmd="rsync -rva" + " --exclude lost+found --exclude 'MPI-*' --exclude 'NodeFile.*' ${TMPDIR}/ ${SGE_O_WORKDIR}/")
+                os.system("qsub -N " + name + "_orbitals" + " submit.job")
+            logging.info("Orbital calculation started in " + path)
     
     elif operation == "f":
         if "aoforce.log" in os.listdir():
@@ -416,6 +422,8 @@ def cleaner(path):
             sort_a_file(i)
         if i[-4:] == ".cub":
             sort_a_file(i, name=i+"e")
+        if i[-5] == ".cube":
+            sort_a_file(i)
         if i[-4:] == ".xyz":
             if i == "coord.xyz":
                 sort_a_file(i, name="geom.xyz")
