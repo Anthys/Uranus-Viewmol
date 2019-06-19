@@ -259,11 +259,14 @@ def launch_job(path, operation):
             logging.info("Error in " + path + " -- No occupied orbitals found in submit.job")
             return
         for orbicur in [mx_orbital, str(int(mx_orbital)+1)]:
-            pass
             o_file = open("control")
             r_file = o_file.read()
             o_file.close()
-            r_file = r_file.replace("$end", "$pointval fmt=cub mo " + orbicur + "\n$end")
+            if not "$pointval" in r_file:
+                r_file = r_file.replace("$end", "$pointval fmt=cub mo " + orbicur + "\n$end")
+            else:
+                mtc = re.search("\$pointval.*\n", r_file)
+                r_file = r_file.replace(mtc.group(), "$pointval fmt=cub mo " + orbicur + "\n")
             o_file = open("control", "w")
             o_file.write(r_file)
             o_file.close()
@@ -411,7 +414,7 @@ def sort_a_file(start_file, end_dir = "", name=""):
 def cleaner(path):
     os.chdir(path)
     if "escf.log" in os.listdir(): os.system("python "+ dir_spyctrum + " -t escf.log -m convolution -l 1 1000") #Sale
-    thedict = {"aoforce.log":"aoforce.log", "molden.input":"freq.in", "mos.in":"mos.in", "mos_cut.in": "mos_cut.in", "exscpectrum":"exspectrum"}
+    thedict = {"aoforce.log":"aoforce.log", "molden.input":"freq.in", "mos.in":"mos.in", "mos_cut.in": "mos_cut.in", "exspectrum":"exspectrum"}
     for i in os.listdir():
         print(i)
         if i in ["aoforce.log","molden.input", "mos.in", "geom.in", "mos_cut.in", "exspectrum"]:
@@ -420,22 +423,23 @@ def cleaner(path):
             sort_a_file(i, "exited_orbitals")
         if i == "panama_files":
             sort_a_file(i)
-        if i[-4:] == ".cub":
-            sort_a_file(i, name=i+"e")
-        if i[-5] == ".cube":
-            sort_a_file(i)
-        if i[-4:] == ".xyz":
-            if i == "coord.xyz":
-                sort_a_file(i, name="geom.xyz")
-            else:
-                sort_a_file(i, "geometry")
-        if i[-5:] == ".plot":
-            if i == "absorption.plot":
+        if len(i)>5:
+            if i[-4:] == ".cub":
+                sort_a_file(i, name=i+"e")
+            if i[-5:] == ".cube":
                 sort_a_file(i)
-            else:
-                sort_a_file(i, "spectra")
-        if i[-4:] == ".csv":
-            sort_a_file(i)
+            if i[-4:] == ".xyz":
+                if i == "coord.xyz":
+                    sort_a_file(i, name="geom.xyz")
+                else:
+                    sort_a_file(i, "geometry")
+            if i[-5:] == ".plot":
+                if i == "absorption.plot":
+                    sort_a_file(i)
+                else:
+                    sort_a_file(i, "spectra")
+            if i[-4:] == ".csv":
+                sort_a_file(i)
     os.chdir("../")
 
 def checkloop():
