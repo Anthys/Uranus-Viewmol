@@ -11,9 +11,9 @@ Uranus-Titania is the current final version of the programm.
 
 #### Args frequently used
 
-- `-c` let you customize the process, to run only what you want.
+- `-c` lets you customize the process, to run only what you want.
 - `-away` send all process to the cluster, so you can shut down your computer and the whole calculation will continue.
-- `-n [name]` permits you to put the name and thus disable any input
+- `-n [name]` lets you to put the name and thus disable any input
 
 
 ### What it can do:
