@@ -36,7 +36,8 @@ symtable = {
     "c2h": ["ag", "bg", "au", "bu"],
     "c2v": ["a1", "a2", "b1", "b2"],
     "cs": ["a'", 'a"'],
-    "c1": ["a"]
+    "c1": ["a"],
+    "c2": ["a", "b"]
 }
 s = sched.scheduler(time.time, time.sleep)
 stdscr = ""
