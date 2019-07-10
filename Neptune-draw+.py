@@ -10,6 +10,7 @@ args={}
 def initarg():
     global parser, args
     parser.add_argument("-n", dest="numb", help="number of structure to show")
+    parser.add_argument("-p", "--points", action="store_true", help="show labels")
     args = parser.parse_args()
     return args
 
@@ -32,12 +33,20 @@ def make_mol():
 
 def hamilt_mol():
     global logfile
+    namefile= ""
+    getter = False
+    for i in os.listdir():
+        if i[-4:]==".log":
+            if namefile:
+                getter=True
+            namefile = i
+    if getter or not namefile:
+        print("Here: ")
+        print(os.listdir())
+        namefile = ""
+        while not namefile in os.listdir():
+            namefile = input("Namefilelog: ")
 
-    print("Here: ")
-    print(os.listdir())
-    namefile = ""
-    while not namefile in os.listdir():
-        namefile = input("Namefilelog: ")
     logfile = namefile
     ffile = open(namefile)
     check = False
@@ -106,19 +115,21 @@ def ajust(args, hamilt):
 
 
 
-def draw_mol(hamilt, mol):
+def draw_mol(hamilt, mol, args):
     for i in range(len(hamilt)):
         for j in range(i, len(hamilt)):
             if hamilt[i][j]!="0":
                 p1 = [mol[i][0], mol[j][0]]
                 p2 = [mol[i][1], mol[j][1]]
+                color = "#FFFFFF"
                 if hamilt[i][j]=="1":
                     color = "#FFFF00"
                 elif hamilt[i][j]=="2":
                     color = "#FF0000"
                 plt.plot(p1, p2, color, linewidth=5)
         plt.plot(mol[i][0], mol[i][1], 'ko')
-        plt.text(mol[i][0]+0.2, mol[i][1]+0.2, mol[i][4], color="black")
+        if args.points:
+            plt.text(mol[i][0]+0.2, mol[i][1]+0.2, mol[i][4], color="black")
 
 initarg()
 fig = plt.figure()
@@ -126,6 +137,6 @@ hamilt = hamilt_mol()
 if args.numb:
     hamilt = ajust(args, hamilt)
 mol = make_mol()
-draw_mol(hamilt, mol)
+draw_mol(hamilt, mol, args)
 
 plt.show()

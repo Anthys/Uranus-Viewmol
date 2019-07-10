@@ -1,15 +1,6 @@
-import time
-import argparse
-import logging
-import subprocess
-import os.path
-import os
-import sys
+import time, argparse, logging, subprocess, os.path, os, sys, sched, re, curses
 from shutil import copyfile
 from collections import OrderedDict
-import sched
-import re
-import curses
 
 
 ## CONSTANTS
