@@ -84,7 +84,7 @@ def draw_atoms(matrix, HAMILT, args, q1, q3, diff=False):
                         color="#0000FF"
                 plt.plot(p1, p2, color, linewidth=5)
                 if args.showvalues:
-                    plt.plot(sum(p1)/2-1, sum(p2)/2, str(HAMILT[i][j]), weight="bold", bbox=props)
+                    plt.text(sum(p1)/2-1, sum(p2)/2, str(round(HAMILT[i][j], 4)), weight="bold", bbox=props)
 
 
 

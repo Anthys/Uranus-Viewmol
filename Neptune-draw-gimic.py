@@ -14,6 +14,7 @@ def initarg():
     parser.add_argument("-xz", "--xzaxis", action="store_true", help="represent x-z insntead of x-y")
     parser.add_argument("-fx", "--flipx", action="store_true", help="flip x axis")
     parser.add_argument("-s", "--save", action="store_true", help="save to pics folder")
+    parser.add_argument("-showv", "--showvalues", action="store_true", help="show values")
     parser.add_argument("-wh", nargs=2, dest="size", help="weight and height of figure", type=int)
     args = parser.parse_args()
     return args
@@ -65,8 +66,13 @@ def draw_things(glob_list, atoms, args):
         p1 = [atoms[int(i[0])-1][f_ax], atoms[int(i[1])-1][f_ax]]
         p2 = [atoms[int(i[0])-1][s_ax], atoms[int(i[1])-1][s_ax]]
         plt.plot(p1, p2, color)
+        midx=(p1[0]+p1[1])/2
+        midy=(p2[0]+p2[1])/2
+        modif = 1 if float(i[wwwant])>0 else -1
+        plt.arrow(midx,midy, (p1[1]-midx)*0.5*modif, (p2[1]-midy)*0.5*modif, head_width=0.3,head_length=0.3, fc='k', ec='k')
         props = dict(boxstyle='round', facecolor='white', alpha=1)
-        plt.text((p1[0]+p1[1])/2-1, (p2[0]+p2[1])/2, i[wwwant], color="black", weight="bold", bbox=props)
+        if args.showvalues:
+            plt.text((p1[0]+p1[1])/2-1, (p2[0]+p2[1])/2, i[wwwant], color="black", weight="bold", bbox=props)
     fig.suptitle(dico[wwwant-2], weight="bold")
     fig.canvas.set_window_title(fig.canvas.manager.window.wm_title() + dico[wwwant-2].replace(" ", "_"))
 
