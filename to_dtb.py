@@ -1,8 +1,14 @@
 import os, argparse
 
+# HARD-CODE
 main_directory = "/home/barres/z_calc/"
+# Working directory, in the cluster. Where calculations are processed.
 database_directory = "/home/barres/xDatabase"
+# Database directory, in the cluster. Where files are put when processes are finished.
 name_program = "Uranus-Titania"
+# Name of the python program to call to process files.
+
+
 and_remove = False
 args = ""
 

@@ -1,0 +1,635 @@
+#!/usr/bin/python
+
+#
+#This script calculates the occupation numbers from an ESCF 
+#output file for the visualisation of unrelaxed difference 
+#densities (call dscf -proper / ridft -proper)
+#
+#Michael Kuehn 
+#27.02.2014
+#
+
+
+print   ""
+print   "       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+print   "       XXX                                                 XXX"
+print   "       XXX                  P A N A M A                    XXX"
+print   "       XXX                                                 XXX"
+print   "       XXX             PEAK ANALYZING MACHINE              XXX"
+print   "       XXX                                                 XXX"
+print   "       XXX                                                 XXX"
+print   "       XXX       CALCULATION OF OCCUPATION NUMBERS         XXX"
+print   "       XXX        FOR VISUALIZATION OF UNRELAXED           XXX"
+print   "       XXX             DIFFERENCE DENSITIES                XXX"
+print   "       XXX                                                 XXX"
+print   "       XXX                                                 XXX"
+print   "       XXX   REFERENCE:                                    XXX"
+print   "       XXX                                                 XXX"
+print   "       XXX     M. Kuehn and F. Weigend                     XXX"
+print   "       XXX     J. Chem. Phys. 141, 224302 (2014)           XXX"
+print   "       XXX                                                 XXX"
+print   "       XXX                                                 XXX"
+print   "       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+print   ""
+
+
+
+import os
+import sys
+import math
+import re
+#import subprocess
+
+print "           Do you want to plot the calculated spectrum (enter 1)"
+print "                                   OR   "
+print "generate control file for visualization of transition densities (enter 2) ?"
+choose = raw_input()
+
+#FUNCTIONS
+############################################################################
+
+# print out list of energies and oscillator strengths from escf.out
+# -----------------------------------------------------------------------------
+def giveexener(fescfout):
+    fobj = open(fescfout, "r")
+    for line in fobj:
+      if "I R R E P" in line:
+          print "- - - - - - - - - - - - - - - - - - - - - - - - - "
+          irrep = line[30:47]
+          print irrep,
+          print "- - - - - - - - - - - - - - - - - - - - - - - - - "
+      if "Excitation energy / eV:" in line:
+            energ = line[40:48]
+            for line2 in fobj:
+                if rep == 1: 
+                   if "velocity representation:" in line2:
+                      osc = line2[40:65]
+                      print energ, osc,
+                      break
+                if rep == 2:
+                   if "length representation:" in line2:
+                      osc = line2[40:65] 
+                      print energ, osc,
+                      break
+                if rep == 3:
+                   if "mixed representation:" in line2:
+                      osc = line2[40:65] 
+                      print energ, osc,
+                      break
+    fobj.close() #close escf.out file
+
+
+# get the energy range for plotting spectra or densities
+# -----------------------------------------------------------------------------
+# getminmax("escf.out",0.0) returns (emin,emax)
+#  -  fescfout   "escf.out" or equivalent file name
+#  -  offset     energy offset for plotting nice spectra broadened by gaussians
+
+def getminmax(fescfout,offset):
+  # first get minimum and maximum of excitation energies from file fescfout
+  etotmin = etotmax = None
+  fobj = open(fescfout, "r")
+  for line in fobj:
+      if "Excitation energy / eV:" in line:
+          if etotmax:
+              etotmin = min(etotmin,float(line[40:60]))
+              etotmax = max(etotmax,float(line[40:60]))
+          else:
+              etotmin = etotmax = float(line[40:60])
+  fobj.close() #close escf.out file
+
+  # initialize emin and emax
+  emin = etotmin-offset
+  emax = etotmax+offset
+  while True:
+      # read in user input
+      emin =  getfloatdefault("min? ",emin)
+      emax =  getfloatdefault("max? ",emax)
+   
+      if emax < emin:
+          print "The energy range is inverted. I will change that.\n"
+          tmp = emax
+          emax = emin
+          emin = tmp
+     
+      # some sanity checks
+      if emin <= etotmax and emax >= etotmin:
+          return (emin,emax) # all good, return values
+     
+      # possible mistakes, print error message, reset variables to something reasonable, and ask the user for his opinion again
+      if emax < etotmin:
+          print "No excitations are within the selected range. The maximal energy has to be >= ",str(etotmin),"!\n"
+          emax = etotmin
+      if emin > etotmax:
+          print "No excitations are within the selected range. The minimal energy has to be <= ",str(etotmax),"!\n"
+          emin = etotmax
+
+# does d[k]+=c if d[k] exists, else the element d[k]=c is initialized
+def addcnt(d,k,c):
+    if k in d:
+        d[k] += c
+    else:
+        d[k] = c
+
+# read in file name of escf output from user input
+# -----------------------------------------------------------------------------
+# getfescfout() returns "escf.out" or equivalent file name
+
+def getfescfout():
+  fescfout = raw_input("Define the escf output file name... (default: escf.out) ")
+  if not fescfout:
+    fescfout = "escf.out"
+
+  while not os.path.isfile(fescfout):
+    fescfout = raw_input("\nERROR! " + fescfout + " does not exist!\n\n Input the correct escf output file name... ")
+
+  return fescfout
+
+# read in integer from user input, ask again if unreasonable input was given
+# -----------------------------------------------------------------------------
+def getinteger(string):
+  while True:
+    try:
+      return int(raw_input(string))
+    except ValueError:
+      print "\nSorry? Try again.\n"
+
+# give default integer value and read in from user input (<return> or integer)
+# -----------------------------------------------------------------------------
+def getintegerdefault(string,default):
+  while True:
+    try:
+      inputint = raw_input(string + " (default: " + str(default) + ") ")
+      if not inputint:
+         return default
+      else:
+         return int(inputint)
+    except ValueError:
+      print "\nSorry? Try again.\n"
+
+# read in float from user input, ask again if unreasonable input was given
+# -----------------------------------------------------------------------------
+def getfloat(string):
+  while True:
+    try:
+      return float(raw_input(string))
+    except ValueError:
+      print "\nSorry? Try again.\n"
+
+# give default float value and read in user input (<return> or another float)
+# -----------------------------------------------------------------------------
+def getfloatdefault(string,default):
+  while True:
+    try:
+      inputfloat = raw_input(string + " (default: " + str(default) + ") ")
+      if not inputfloat:
+        return default
+      else:
+        return float(inputfloat)
+    except ValueError:
+      print "\nSorry? Try again.\n"
+  
+
+#PLOT SPECTRUM
+##################################################################
+if choose == "1": 
+
+  fescfout = getfescfout()
+
+  rep = getintegerdefault("Oscillator strengths in which representation?\n1: velocity, 2: length, 3: mixed",1)
+  if rep > 3 or rep < 1:
+    sys.exit("Error!")
+
+  print " "
+  print "All calculated excitation energies in eV" 
+  print "and oscillator strengths in chosen representation:" 
+  print " "
+  
+  giveexener(fescfout)
+
+  print " "
+  print  "Energy range of plot in eV?"
+  (emin, emax) = getminmax(fescfout,0.5)
+
+#  print "Calculate FWHM from oscillator strengths (enter 1)"
+#  print "                     OR "
+#  print "             enter manually (2)?"
+#  choose2 = int(raw_input())
+#  if choose2 == 2: 
+  choose2 = 2 
+  fwhm = getfloatdefault("FWHM in eV?",0.1)
+#  else:
+#    print  "Scaling factor? (e.g. 10000000)"
+#    scal = float(raw_input())
+  stepw = getfloatdefault("Stepwidth in eV?",0.01)
+
+
+  fobj2 = open("data.plot", "w")
+  fobj = open(fescfout, "r")
+
+  fac = 2.35482004503104**2
+  
+  hbar = 6.58211928*10**(-16) # in eV*s
+  life = 3.112348193799064877*10**(-11) # conversion for lifetime (see proper.f)
+  evfac = 27.21139617 # ev - Hartree conversion
+
+  ev2nm = 1239.8424
+
+#Generate Gaussian curves
+# f(x) = osc*exp(-(x-y)^2/(2*fwhm)*fac)
+
+  x = emin
+ 
+  while x <= emax:
+    y = 0 
+    fobj.seek(0) #reset to first line
+    for line in fobj:
+        if "Excitation energy / eV:" in line:
+             energ = float(line[40:60])
+             for line2 in fobj:
+                 if rep == 1:
+                    tmp = "velocity representation:"
+                 elif rep == 2:
+                    tmp = "length representation:"
+                 else :
+                    tmp = "mixed representation:"
+  
+                 if tmp in line2:
+                    osc = float(line2[36:63])
+                    if energ < emin:
+                       osc = 0
+                    if energ > emax:
+                       osc = 0
+                    break
+
+             if choose2 == 1: # calculate FWHM from oscillator strength
+                                
+                lt = energ*energ*osc/(evfac*evfac)
+                if lt < 10**(-20): #take care of zero division
+                   lt = 10**(-20)/life
+                lt = life/lt # lifetime in seconds
+                print lt
+                fwhm = hbar/(2*lt)*scal # e.g.10000000
+#                print fwhm
+
+             ponent = -(x-energ)**2
+             ponent = 0.5*fac*ponent/(fwhm**2) 
+             y = y + osc*math.exp(ponent)
+
+
+#    print x, y 
+    fobj2.write(str(x) + " " + str(y) + " " + "\n")
+    x = x + stepw 
+
+
+  fobj2.close()
+  fobj.close() #close escf.out file
+
+  print " "
+  print "   data.plot file was generated!   "
+  print " "
+  print "   columns 1st: excitation energy in eV"
+  print "           2nd: oscillator strength"
+#  print "           3rd: excitation energy in nm"
+  print " "
+
+#  print "    plot with gnuplot? (y/n) "
+#  choose2 = raw_input()
+# 
+#  if choose2 == "y":
+#    os.system("bash -c \"echo 'plot 'data.plot' w l ; pause 1000' | gnuplot \"")
+#     plot = subprocess.Popen(['gnuplot'], stdin=subprocess.PIPE)
+#     plot.communicate("plot '%s' w l;" % (data.plot))
+
+  print " "
+  print "   ****  panama : all done  **** "
+  print " "
+
+
+#C L C O C C
+##################################################################
+
+elif choose == "2":
+  #Define lists
+  combo = {}
+  combv = {}
+  comoo = {}
+  comov = {}
+  
+  #check if soghf or closed-shell
+  
+  if not os.path.isfile("control"):
+    quit("This does not look like a turbomole directory. The control file is missing!")
+  fobj = open("control", "r")
+  
+  occfac = 2
+  mode = 'rhf'
+  regexuhf= re.compile("^ *\$uhf") # matches only active $uhf flag, #$uhf is ignored
+  regexghf= re.compile("^ *\$soghf")
+  for line in fobj:
+      if regexuhf.match(line):
+        occfac = 1
+        mode = 'uhf'
+      if regexghf.match(line):
+        occfac = 1
+        mode = 'soghf'
+  
+  fobj.close() #close control file
+  
+  
+  # get filename of escf output
+  fescfout = getfescfout()
+  
+  rep = getintegerdefault("Oscillator strengths in which representation?\n1: velocity, 2: length, 3: mixed",1)
+  if rep > 3 or rep < 1:
+    sys.exit("Error!")
+  print " "
+  print "All calculated excitation energies in eV" 
+  print "and oscillator strengths in chosen representation:" 
+  print " "
+  
+  giveexener(fescfout)
+  
+  
+  print " "
+  print  "Energy range of excitations to be included in eV?"
+  emin, emax = getminmax(fescfout,0.0)
+
+  if emin == emax:
+    print "Generating occupations based on the excitation at ",str(emin)," eV..."
+  else:
+    print "Generating occupations based on the excitations in the range of ",str(emin)," to ",str(emax)," eV..."
+
+
+  fobj = open(fescfout, "r")
+  
+  for line in fobj:
+      if "Excitation energy / eV:" in line:
+           energ = float(line[40:60])
+  #         print energ
+           for line2 in fobj: 
+               if rep == 1:
+                  tmp = "velocity representation:" 
+               elif rep == 2:
+                  tmp = "length representation:"
+               else :
+                  tmp = "mixed representation:"
+  
+               if tmp in line2:
+                  osc = float(line2[36:63])
+                  if energ < emin:
+                     osc = -1 #osc =0
+                  if energ > emax:
+                     osc = -1 #osc = 0
+                  if osc>=0: #if osc>0:
+  #                   print energ, osc
+                     osc=1
+                     for line3 in fobj:
+                        if "occ. orbital   energy" in line3: 
+  #                         print line3
+                           for line4 in fobj:
+                              leer = line4[2:75]
+                              line4 = re.sub(r'\*','',line4)
+                              if len(leer) == 0:
+                                 break
+                              # convert line4 to array
+                              items = line4.split( )
+                              imo = items[1] + "  " + items[0] # name of occupied orbital, e.g. ag 67
+                              if mode == 'uhf' :
+                                 jmo = items[5] + "  " + items[4]
+                              else :
+                                 jmo = items[4] + "  " + items[3]
+  
+                              if mode == 'uhf' :
+                                 cnt = float(items[8])
+                              else :
+                                 cnt = float(items[6])
+                               
+                              #cnt = cnt*osc/100                              
+
+                              if osc==0 :
+                                 cnt = cnt*0.1/100
+                                 print "osc 0"
+                              else :
+                                 cnt = cnt*osc/100
+                                 print "osc != 0", cnt
+
+                              # occupied
+                              tmp = 'alpha'
+                              if mode == 'uhf' :
+                                 tmp = items[2]
+                              if tmp == 'beta' :
+                                 addcnt(combo,imo,-cnt)
+                              else :
+                                 addcnt(comoo,imo,-cnt)
+
+                              # virtual
+                              tmp = 'alpha'
+                              if mode == 'uhf' :
+                                 tmp = items[6]
+                              if tmp == 'beta' :
+                                 addcnt(combv,jmo,cnt)
+                              else :
+                                 addcnt(comov,jmo,cnt)
+  
+                           break 
+  
+                  break
+  
+  fobj.close() #close escf.out file
+  
+  
+  amax = 0
+  
+  for imo in comoo.keys():
+      amax = amax - comoo[imo]
+  for imo in comov.keys():
+      amax = amax + comov[imo]
+  
+  if amax  > 10**(-10) :
+      for imo in comoo.keys():
+          comoo[imo] = occfac*comoo[imo]/amax
+      for imo in comov.keys():
+          comov[imo] = occfac*comov[imo]/amax
+
+  # ... do the same for beta orbitals
+  if mode == 'uhf' :
+      amax = 0
+      for imo in combo.keys():
+          amax = amax - combo[imo]
+      for imo in combv.keys():
+          amax = amax + combv[imo]
+
+      if amax  > 10**(-10) :
+          for imo in combo.keys():
+              combo[imo] = occfac*combo[imo]/amax
+          for imo in combv.keys():
+              combv[imo] = occfac*combv[imo]/amax
+  
+  
+  def cleanctrl():
+       os.system("bash -c \"kdg pop\"")
+       os.system("bash -c \"kdg pointval\"")
+  #     if not os.path.isfile(control_save): #check if control_save already exists
+       os.system("bash -c \"cp control save_control\"")  
+  
+  #     os.system("bash -c \"kdg end\"")
+  #     os.system("bash -c \"echo '$pop' >> control\"")
+  #     os.system("bash -c \"echo '$pointval' >> control\"")
+  #     os.system("bash -c \"echo '$end' >> control\"")
+       
+  
+  cleanctrl()
+  
+  fobj = open("save_control", "r")
+  fobj2 = open("control", "w")
+  
+  if mode == 'rhf' :
+    for line in fobj:
+         fobj2.write(line)
+         if "$closed shells" in line: 
+            for line2 in fobj:
+              tmp = line2
+              if not tmp.startswith(' '):
+                fobj2.write("#occ numbers for visualization:" + "\n")  
+  
+                #occupied
+                for imo in comoo:
+                  print "comoo[imo]=", comoo[imo]
+                  if comoo[imo] < -0.01 :
+                     fobj2.write("  " + str(imo) + "  (" + str(comoo[imo]) + ") " + "\n")
+                
+                #virtual
+                for imo in comov:
+                  print "comov[imo]=", comov[imo]
+                  if comov[imo]  > 0.01 :
+                     fobj2.write("  " + str(imo) + "  (" + str(comov[imo]) + ") " + "\n")
+                
+                fobj2.write("$pop" + "\n") 
+                fobj2.write("$pointval" + "\n") 
+                fobj2.write(line2)
+                break          
+              fobj2.write("#" + line2) 
+              
+  
+  if mode == 'soghf' :
+    for line in fobj:
+         fobj2.write(line)
+         if "$spinor shells" in line: 
+            for line2 in fobj:
+              tmp = line2
+              if not tmp.startswith(' '):
+                fobj2.write("#occ numbers for visualization:" + "\n")  
+  
+                #occupied
+                for imo in comoo:
+                  if comoo[imo] < -0.01 :
+                     fobj2.write("  " + str(imo) + "  (" + str(comoo[imo]) + ") " + "\n")
+                
+                #virtual
+                for imo in comov:
+                  if comov[imo]  > 0.01 :
+                     fobj2.write("  " + str(imo) + "  (" + str(comov[imo]) + ") " + "\n")
+                
+                fobj2.write("$pop" + "\n") 
+                fobj2.write("$pointval" + "\n") 
+                fobj2.write(line2)
+                break          
+              fobj2.write("#" + line2) 
+              
+  
+  if mode == 'uhf' :
+    for line in fobj:
+         fobj2.write(line)
+         if "$alpha shells" in line: 
+            for line2 in fobj:
+              tmp = line2
+#              print line2
+              if not tmp.startswith(' '):
+                fobj2.write("#occ numbers for visualization:" + "\n")  
+  
+                #occupied
+                for imo in comoo:
+                  if comoo[imo] < -0.01 :
+                     fobj2.write("  " + str(imo) + "  (" + str(comoo[imo]) + ") " + "\n")
+                
+                #virtual
+                for imo in comov:
+                  if comov[imo]  > 0.01 :
+                     fobj2.write("  " + str(imo) + "  (" + str(comov[imo]) + ") " + "\n")
+                
+                fobj2.write(line2)
+                break          
+              fobj2.write("#" + line2) 
+         if "$beta shells" in line or "$beta shells" in tmp: 
+            for line2 in fobj:
+              tmp = line2
+#              print line2
+              if not tmp.startswith(' '):
+                fobj2.write("#occ numbers for visualization:" + "\n")  
+  
+                #occupied
+                for imo in combo:
+                  if combo[imo] < -0.01 :
+                     fobj2.write("  " + str(imo) + "  (" + str(combo[imo]) + ") " + "\n")
+                
+                #virtual
+                for imo in combv:
+                  if combv[imo]  > 0.01 :
+                     fobj2.write("  " + str(imo) + "  (" + str(combv[imo]) + ") " + "\n")
+                
+                fobj2.write("$pop" + "\n") 
+                fobj2.write("$pointval" + "\n") 
+                fobj2.write(line2)
+                break          
+              fobj2.write("#" + line2) 
+              
+              
+  
+  fobj.close() #close control file
+  fobj2.close() #close control file
+  
+  
+  fobj = open("control", "r")
+  
+  trip = 0
+  for line in fobj:
+    if '$scfinstab cist' in line:
+      trip = 1
+    if '$scfinstab rpat' in line:
+      trip = 1
+  
+  if trip == 1:
+   print "                                                   "
+   print "                 !!! ATTENTION: !!!                "
+   print "                                                   "
+   print "  OSCILLATOR STRENGHTS IN " + fescfout + " ARE UNPHYSICAL  "
+   print " SINCE THEY SHOULD BE ZERO FOR TRIPLET EXCITATIONS "
+  
+  fobj.close() #close control file
+  
+  
+#  os.system("bash -c \"dscf -proper \"")  
+  os.system("bash -c \"cp control plot_control \"") 
+#  os.system("bash -c \"mv save_control control \"")
+
+
+  print " "
+#  print "        control file was modified!   "
+#  print "old control file was saved to save_control"
+  print " - - - - - - - - - - - - - - - - - - - - - - - - "
+  print " "
+  print "         now run dscf/ridft -proper         "
+  print "             and plot td.plt!         "
+  print " "
+  print "      ****  panama : all done  ****  "
+  print " "
+#  print "... now run dscf -proper / ridft -proper ..."
+  print " "
+
+
+else:
+
+ print "Error!"
+
+
